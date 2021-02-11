@@ -1,3 +1,5 @@
+from checks import check_processor_flags_routine
+
 LDA_IMMEDIATE_OPCODE = 0xa9
 LDA_ZEROPAGE_OPCODE = 0xa5
 LDA_ZEROPAGEX_OPCODE = 0xb5
@@ -6,13 +8,6 @@ LDA_ABSOLUTEX_OPCODE = 0xbd
 LDA_ABSOLUTEY_OPCODE = 0xb9
 LDA_INDIRECTX_OPCODE = 0xa1
 LDA_INDIRECTY_OPCODE = 0xb1
-
-
-def check_lda_flags_routine(cpu):
-    if (cpu.a == 0):
-        cpu.processor_status['zero'] = 1
-    if (cpu.a & 0b10000000) > 0:
-        cpu.processor_status['negative'] = 1
 
 
 class LDAImmediate(object):
@@ -26,7 +21,7 @@ class LDAImmediate(object):
         # TODO set the flags
         cpu.a = byte_r
 
-        check_lda_flags_routine(cpu)
+        check_processor_flags_routine(cpu)
 
 
 class LDAZeroPage(object):
@@ -40,7 +35,7 @@ class LDAZeroPage(object):
         byte_r = cpu.read_byte(address)
         print("LDA zero page byte read: %s" % hex(byte_r))
         cpu.a = byte_r
-        check_lda_flags_routine(cpu)
+        check_processor_flags_routine(cpu)
 
 
 class LDAZeroPageX(object):
@@ -60,7 +55,7 @@ class LDAZeroPageX(object):
         print("LDA zero page byte read: %s" % hex(byte_r))
         cpu.a = byte_r
 
-        check_lda_flags_routine(cpu)
+        check_processor_flags_routine(cpu)
 
 
 class LDAAbsolute(object):
@@ -75,7 +70,7 @@ class LDAAbsolute(object):
         print("LDA absolute byte read: %s" % hex(byte_r))
         cpu.a = byte_r
 
-        check_lda_flags_routine(cpu)
+        check_processor_flags_routine(cpu)
 
 
 class LDAAbsoluteX(object):
@@ -93,7 +88,7 @@ class LDAAbsoluteX(object):
         print("LDA absolute X byte read: %s" % hex(byte_r))
         cpu.a = byte_r
 
-        check_lda_flags_routine(cpu)
+        check_processor_flags_routine(cpu)
 
 
 class LDAAbsoluteY(object):
@@ -111,7 +106,7 @@ class LDAAbsoluteY(object):
         print("LDA absolute Y byte read: %s" % hex(byte_r))
         cpu.a = byte_r
 
-        check_lda_flags_routine(cpu)
+        check_processor_flags_routine(cpu)
 
 
 class LDAIndirectX(object):
@@ -129,7 +124,7 @@ class LDAIndirectX(object):
         print("LDA indirect X byte read: %s" % hex(byte_r))
         cpu.a = byte_r
 
-        check_lda_flags_routine(cpu)
+        check_processor_flags_routine(cpu)
 
 
 class LDAIndirectY(object):
@@ -150,4 +145,4 @@ class LDAIndirectY(object):
         print("LDA indirect y byte read: %s" % hex(byte_r))
         cpu.a = byte_r
 
-        check_lda_flags_routine(cpu)
+        check_processor_flags_routine(cpu)

@@ -1,18 +1,18 @@
-import instructions
+from instructions import lda
 
 PAGE_SIZE = 256
 MEM_SIZE = 65536
 START_ADDRESS = 0xfffc
 
 OPCODES_TABLE = {
-    instructions.LDA_IMMEDIATE_OPCODE: instructions.LDAImmediate(),
-    instructions.LDA_ZEROPAGE_OPCODE: instructions.LDAZeroPage(),
-    instructions.LDA_ZEROPAGEX_OPCODE: instructions.LDAZeroPageX(),
-    instructions.LDA_ABSOLUTE_OPCODE: instructions.LDAAbsolute(),
-    instructions.LDA_ABSOLUTEX_OPCODE: instructions.LDAAbsoluteX(),
-    instructions.LDA_ABSOLUTEY_OPCODE: instructions.LDAAbsoluteY(),
-    instructions.LDA_INDIRECTX_OPCODE: instructions.LDAIndirectX(),
-    instructions.LDA_INDIRECTY_OPCODE: instructions.LDAIndirectY(),
+    lda.LDA_IMMEDIATE_OPCODE: lda.LDAImmediate(),
+    lda.LDA_ZEROPAGE_OPCODE: lda.LDAZeroPage(),
+    lda.LDA_ZEROPAGEX_OPCODE: lda.LDAZeroPageX(),
+    lda.LDA_ABSOLUTE_OPCODE: lda.LDAAbsolute(),
+    lda.LDA_ABSOLUTEX_OPCODE: lda.LDAAbsoluteX(),
+    lda.LDA_ABSOLUTEY_OPCODE: lda.LDAAbsoluteY(),
+    lda.LDA_INDIRECTX_OPCODE: lda.LDAIndirectX(),
+    lda.LDA_INDIRECTY_OPCODE: lda.LDAIndirectY(),
 }
 
 class Memory(object):
