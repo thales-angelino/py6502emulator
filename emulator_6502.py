@@ -1,4 +1,4 @@
-from instructions import lda
+from instructions import lda, ldx
 
 PAGE_SIZE = 256
 MEM_SIZE = 65536
@@ -13,6 +13,11 @@ OPCODES_TABLE = {
     lda.LDA_ABSOLUTEY_OPCODE: lda.LDAAbsoluteY(),
     lda.LDA_INDIRECTX_OPCODE: lda.LDAIndirectX(),
     lda.LDA_INDIRECTY_OPCODE: lda.LDAIndirectY(),
+    ldx.LDX_IMMEDIATE_OPCODE: ldx.LDXImmediate(),
+    ldx.LDX_ZEROPAGE_OPCODE: ldx.LDXZeroPage(),
+    ldx.LDX_ZEROPAGEY_OPCODE: ldx.LDXZeroPageY(),
+    ldx.LDX_ABSOLUTE_OPCODE: ldx.LDXAbsolute(),
+    ldx.LDX_ABSOLUTEY_OPCODE: ldx.LDXAbsoluteY(),
 }
 
 class Memory(object):
