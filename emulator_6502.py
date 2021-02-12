@@ -1,4 +1,4 @@
-from instructions import lda, ldx
+from instructions import lda, ldx, ldy
 
 PAGE_SIZE = 256
 MEM_SIZE = 65536
@@ -18,6 +18,11 @@ OPCODES_TABLE = {
     ldx.LDX_ZEROPAGEY_OPCODE: ldx.LDXZeroPageY(),
     ldx.LDX_ABSOLUTE_OPCODE: ldx.LDXAbsolute(),
     ldx.LDX_ABSOLUTEY_OPCODE: ldx.LDXAbsoluteY(),
+    ldy.LDY_IMMEDIATE_OPCODE: ldy.LDYImmediate(),
+    ldy.LDY_ZEROPAGE_OPCODE: ldy.LDYZeroPage(),
+    ldy.LDY_ZEROPAGEX_OPCODE: ldy.LDYZeroPageX(),
+    ldy.LDY_ABSOLUTE_OPCODE: ldy.LDYAbsolute(),
+    ldy.LDY_ABSOLUTEX_OPCODE: ldy.LDYAbsoluteX(),
 }
 
 class Memory(object):
@@ -82,7 +87,7 @@ class CPU(object):
             'negative': 0
         }
 
-        self.cycles = 0
+        self.cycles = 0    
 
     def reset(self):
         self.program_counter = 0xfffc
