@@ -35,7 +35,7 @@ class TestLDA(unittest.TestCase):
         self.memory.memory[emulator.START_ADDRESS] = lda.LDA_ABSOLUTEX_OPCODE
         self.memory.memory[0xfffd] = 0xff # LSB FIRST!!!
         self.memory.memory[0xfffe] = 0x02
-        self.memory.memory[0x0300] = 0x41
+        self.memory.memory[0x0300] = value
         self.cpu.x = 0x01
         self.cpu.execute(1)
         self.assertEqual(self.cpu.a, value, "Register A should contain: %s" % hex(value))

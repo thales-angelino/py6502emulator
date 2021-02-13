@@ -18,9 +18,7 @@ class LDAImmediate(object):
     def run(self, cpu):
         byte_r = cpu.fetch_byte()
         print("LDA immediate byte read: %s" % hex(byte_r))
-        # TODO set the flags
         cpu.a = byte_r
-
         check_processor_flags_routine(cpu)
 
 
@@ -54,7 +52,6 @@ class LDAZeroPageX(object):
         byte_r = cpu.read_byte(address)
         print("LDA zero page byte read: %s" % hex(byte_r))
         cpu.a = byte_r
-
         check_processor_flags_routine(cpu)
 
 
@@ -69,7 +66,6 @@ class LDAAbsolute(object):
         byte_r = cpu.read_byte(address)
         print("LDA absolute byte read: %s" % hex(byte_r))
         cpu.a = byte_r
-
         check_processor_flags_routine(cpu)
 
 
@@ -87,7 +83,6 @@ class LDAAbsoluteX(object):
         byte_r = cpu.read_byte(address)
         print("LDA absolute X byte read: %s" % hex(byte_r))
         cpu.a = byte_r
-
         check_processor_flags_routine(cpu)
 
 
@@ -105,7 +100,6 @@ class LDAAbsoluteY(object):
         byte_r = cpu.read_byte(address)
         print("LDA absolute Y byte read: %s" % hex(byte_r))
         cpu.a = byte_r
-
         check_processor_flags_routine(cpu)
 
 
@@ -123,7 +117,6 @@ class LDAIndirectX(object):
         byte_r = cpu.read_byte(address)
         print("LDA indirect X byte read: %s" % hex(byte_r))
         cpu.a = byte_r
-
         check_processor_flags_routine(cpu)
 
 
@@ -144,5 +137,4 @@ class LDAIndirectY(object):
         byte_r = cpu.read_byte(address)
         print("LDA indirect y byte read: %s" % hex(byte_r))
         cpu.a = byte_r
-
         check_processor_flags_routine(cpu)
