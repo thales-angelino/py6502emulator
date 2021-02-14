@@ -1,4 +1,4 @@
-from instructions import lda, ldx, ldy, adc
+from instructions import lda, ldx, ldy, adc, _and
 
 PAGE_SIZE = 256
 MEM_SIZE = 65536
@@ -35,6 +35,14 @@ OPCODES_TABLE = {
     adc.ADC_ABSOLUTEY_OPCODE: adc.ADCAbsoluteY(),
     adc.ADC_INDIRECTX_OPCODE: adc.ADCIndirectX(),
     adc.ADC_INDIRECTY_OPCODE: adc.ADCIndirectY(),
+    _and.AND_IMMEDIATE_OPCODE: _and.ANDImmediate(),
+    _and.AND_ZEROPAGE_OPCODE: _and.ANDZeroPage(),
+    _and.AND_ZEROPAGEX_OPCODE: _and.ANDZeroPageX(),
+    _and.AND_ABSOLUTE_OPCODE: _and.ANDAbsolute(),
+    _and.AND_ABSOLUTEX_OPCODE: _and.ANDAbsoluteX(),
+    _and.AND_ABSOLUTEY_OPCODE: _and.ANDAbsoluteY(),
+    _and.AND_INDIRECTX_OPCODE: _and.ANDIndirectX(),
+    _and.AND_INDIRECTY_OPCODE: _and.ANDIndirectY(),
 }
 
 class Memory(object):
@@ -192,6 +200,13 @@ class CPU(object):
             self.processor_status['overflow'] = 1
 
         self.check_processor_flags_routine(self.a)
+
+    def _and(self, value):
+        result = (self.a & value)
+        self.a = result
+        self.check_processor_flags_routine(self.a)
+
+    # Memory access methods
 
     def immediate(self):
         return self.fetch_byte()
