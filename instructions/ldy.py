@@ -11,7 +11,7 @@ class LDYImmediate(object):
         super(LDYImmediate, self).__init__()
 
     def run(self, cpu):
-        byte_r = cpu.fetch_byte()
+        byte_r = cpu.immediate()
         print("LDY immediate byte read: %s" % hex(byte_r))
         cpu.load_register_y(byte_r)
 
@@ -22,9 +22,7 @@ class LDYZeroPage(object):
         super(LDYZeroPage, self).__init__()
 
     def run(self, cpu):
-        address = cpu.fetch_byte()
-        print("LDY absolute Address: %s" % hex(address))
-        byte_r = cpu.read_byte(address)
+        byte_r = cpu.zero_page()
         print("LDY zero page byte read: %s" % hex(byte_r))
         cpu.load_register_y(byte_r)
 
@@ -34,14 +32,7 @@ class LDYZeroPageX(object):
         super(LDYZeroPageX, self).__init__()
 
     def run(self, cpu):
-        address = cpu.fetch_byte() + cpu.x
-        cpu.cycles += 1
-        # Truncate if the address is exceeded
-        if address > 0xff:
-            address = address & 0xff
-
-        print("LDY zero page + X address: %s" % hex(address))
-        byte_r = cpu.read_byte(address)
+        byte_r = cpu.zero_page_x()
         print("LDY zero page byte read: %s" % hex(byte_r))
         cpu.load_register_y(byte_r)
 
@@ -52,9 +43,7 @@ class LDYAbsolute(object):
         super(LDYAbsolute, self).__init__()
 
     def run(self, cpu):
-        address = cpu.fetch_word()
-        print("LDY absolute Address: %s" % hex(address))
-        byte_r = cpu.read_byte(address)
+        byte_r = cpu.absolute()
         print("LDY absolute byte read: %s" % hex(byte_r))
         cpu.load_register_y(byte_r)
 
@@ -65,11 +54,6 @@ class LDYAbsoluteX(object):
         super(LDYAbsoluteX, self).__init__()
 
     def run(self, cpu):
-        address = cpu.fetch_word() + cpu.x
-        if address > 0xffff:
-            address = address & 0xffff
-            cpu.cycles += 1
-        print("LDY absolute X Address: %s" % hex(address))
-        byte_r = cpu.read_byte(address)
+        byte_r = cpu.absolute_x()
         print("LDY absolute X byte read: %s" % hex(byte_r))
         cpu.load_register_y(byte_r)
