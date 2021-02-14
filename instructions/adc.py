@@ -1,5 +1,3 @@
-from checks import check_processor_flags_routine
-
 ADC_IMMEDIATE_OPCODE = 0x69
 ADC_ZEROPAGE_OPCODE = 0x65
 ADC_ZEROPAGEX_OPCODE = 0x75
@@ -8,33 +6,6 @@ ADC_ABSOLUTEX_OPCODE = 0x7d
 ADC_ABSOLUTEY_OPCODE = 0x79
 ADC_INDIRECTX_OPCODE = 0x61
 ADC_INDIRECTY_OPCODE = 0x71
-
-LSB_7BITS_ENABLED_MASK = 0x7f 
-OVERFLOW_MASK = 0x80
-
-
-def adc(cpu, value):
-    """
-    ADC instruction
-
-    http://www.righto.com/2012/12/the-6502-overflow-flag-explained.html
-
-    It should also check the processor status decimal flag.
-    """
-    result = cpu.a + value + cpu.processor_status['carry']
-    c6 = ((cpu.a & LSB_7BITS_ENABLED_MASK) +
-          (value & LSB_7BITS_ENABLED_MASK) + 
-          cpu.processor_status['carry']) & OVERFLOW_MASK
-    if c6:
-        c6 = 1
-    cpu.a = (result & 0xff)
-
-    cpu.processor_status['carry'] = 0
-    if result > 0xff:
-        cpu.processor_status['carry'] = 1
-    
-    if c6 ^ cpu.processor_status['carry']:
-        cpu.processor_status['overflow'] = 1
 
 
 class ADCImmediate(object):
@@ -46,7 +17,7 @@ class ADCImmediate(object):
         print("ADC memory byte read: %s" % hex(byte_r))
         print("ADC register A read: %s" % hex(cpu.a))
         print("ADC processor status Carry read: %s" % hex(cpu.processor_status['carry']))
-        adc(cpu, byte_r)
+        cpu.adc(byte_r)
 
 
 class ADCZeroPage(object):
@@ -61,7 +32,7 @@ class ADCZeroPage(object):
         print("ADC zero page byte read: %s" % hex(byte_r))
         print("ADC register A read: %s" % hex(cpu.a))
         print("ADC processor status Carry read: %s" % hex(cpu.processor_status['carry']))
-        adc(cpu, byte_r)
+        cpu.adc(byte_r)
 
 
 class ADCZeroPageX(object):
@@ -79,7 +50,7 @@ class ADCZeroPageX(object):
         print("ADC zero page X byte read: %s" % hex(byte_r))
         print("ADC register A read: %s" % hex(cpu.a))
         print("ADC processor status carry read: %s" % hex(cpu.processor_status['carry']))
-        adc(cpu, byte_r)
+        cpu.adc(byte_r)
 
 
 class ADCAbsolute(object):
@@ -93,7 +64,7 @@ class ADCAbsolute(object):
         print("ADC absolute byte read: %s" % hex(byte_r))
         print("ADC register A read: %s" % hex(cpu.a))
         print("ADC processor status carry read: %s" % hex(cpu.processor_status['carry']))
-        adc(cpu, byte_r)
+        cpu.adc(byte_r)
 
 
 class ADCAbsoluteX(object):
@@ -110,7 +81,7 @@ class ADCAbsoluteX(object):
         print("ADC absolute x byte read: %s" % hex(byte_r))
         print("ADC register A read: %s" % hex(cpu.a))
         print("ADC processor status carry read: %s" % hex(cpu.processor_status['carry']))
-        adc(cpu, byte_r)
+        cpu.adc(byte_r)
 
 
 class ADCAbsoluteY(object):
@@ -127,7 +98,7 @@ class ADCAbsoluteY(object):
         print("ADC absolute Y byte read: %s" % hex(byte_r))
         print("ADC register A read: %s" % hex(cpu.a))
         print("ADC processor status carry read: %s" % hex(cpu.processor_status['carry']))
-        adc(cpu, byte_r)
+        cpu.adc(byte_r)
 
 
 class ADCIndirectX(object):
@@ -144,7 +115,7 @@ class ADCIndirectX(object):
         print("ADC indirect X byte read: %s" % hex(byte_r))
         print("ADC register A read: %s" % hex(cpu.a))
         print("ADC processor status carry read: %s" % hex(cpu.processor_status['carry']))
-        adc(cpu, byte_r)
+        cpu.adc(byte_r)
 
 
 class ADCIndirectY(object):
@@ -162,4 +133,4 @@ class ADCIndirectY(object):
         print("ADC indirect Y byte read: %s" % hex(byte_r))
         print("ADC register A read: %s" % hex(cpu.a))
         print("ADC processor status Carry read: %s" % hex(cpu.processor_status['carry']))
-        adc(cpu, byte_r)
+        cpu.adc(byte_r)

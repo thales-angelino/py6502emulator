@@ -1,6 +1,3 @@
-from checks import check_processor_flags_routine
-
-
 LDX_IMMEDIATE_OPCODE = 0xa2
 LDX_ZEROPAGE_OPCODE = 0xa6
 LDX_ZEROPAGEY_OPCODE = 0xb6
@@ -16,9 +13,7 @@ class LDXImmediate(object):
     def run(self, cpu):
         byte_r = cpu.fetch_byte()
         print("LDX immediate byte read: %s" % hex(byte_r))
-        # TODO set the flags
-        cpu.x = byte_r
-        check_processor_flags_routine(cpu)
+        cpu.load_register_x(byte_r)
 
 
 class LDXZeroPage(object):
@@ -31,9 +26,7 @@ class LDXZeroPage(object):
         print("LDX zero page Address: %s" % hex(address))
         byte_r = cpu.read_byte(address)
         print("LDX zero page byte read: %s" % hex(byte_r))
-        cpu.x = byte_r
-        check_processor_flags_routine(cpu)
-
+        cpu.load_register_x(byte_r)
 
 class LDXZeroPageY(object):
     """LDX Zero Page Y instruction"""
@@ -50,8 +43,7 @@ class LDXZeroPageY(object):
         print("LDX zero page Y Address: %s" % hex(address))
         byte_r = cpu.read_byte(address)
         print("LDX zero page Y byte read: %s" % hex(byte_r))
-        cpu.x = byte_r
-        check_processor_flags_routine(cpu)
+        cpu.load_register_x(byte_r)
 
 
 class LDXAbsolute(object):
@@ -64,8 +56,7 @@ class LDXAbsolute(object):
         print("LDX absolute Address: %s" % hex(address))
         byte_r = cpu.read_byte(address)
         print("LDX absolute byte read: %s" % hex(byte_r))
-        cpu.x = byte_r
-        check_processor_flags_routine(cpu)
+        cpu.load_register_x(byte_r)
 
 
 class LDXAbsoluteY(object):
@@ -81,5 +72,4 @@ class LDXAbsoluteY(object):
         print("LDX absolute Y Address: %s" % hex(address))
         byte_r = cpu.read_byte(address)
         print("LDX absolute Y byte read: %s" % hex(byte_r))
-        cpu.x = byte_r
-        check_processor_flags_routine(cpu)
+        cpu.load_register_x(byte_r)

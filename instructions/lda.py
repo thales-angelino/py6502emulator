@@ -1,5 +1,3 @@
-from checks import check_processor_flags_routine
-
 LDA_IMMEDIATE_OPCODE = 0xa9
 LDA_ZEROPAGE_OPCODE = 0xa5
 LDA_ZEROPAGEX_OPCODE = 0xb5
@@ -16,10 +14,9 @@ class LDAImmediate(object):
         super(LDAImmediate, self).__init__()
 
     def run(self, cpu):
-        byte_r = cpu.fetch_byte()
+        byte_r = cpu.immediate()
         print("LDA immediate byte read: %s" % hex(byte_r))
-        cpu.a = byte_r
-        check_processor_flags_routine(cpu)
+        cpu.load_register_a(byte_r)
 
 
 class LDAZeroPage(object):
@@ -28,12 +25,9 @@ class LDAZeroPage(object):
         super(LDAZeroPage, self).__init__()
 
     def run(self, cpu):
-        address = cpu.fetch_byte()
-        print("LDA absolute Address: %s" % hex(address))
-        byte_r = cpu.read_byte(address)
+        byte_r = cpu.zero_page()
         print("LDA zero page byte read: %s" % hex(byte_r))
-        cpu.a = byte_r
-        check_processor_flags_routine(cpu)
+        cpu.load_register_a(byte_r)
 
 
 class LDAZeroPageX(object):
@@ -42,17 +36,9 @@ class LDAZeroPageX(object):
         super(LDAZeroPageX, self).__init__()
 
     def run(self, cpu):
-        address = cpu.fetch_byte() + cpu.x
-        cpu.cycles += 1
-        # Truncate if the address is exceeded
-        if address > 0xff:
-            address = address & 0xff
-
-        print("LDA absolute Address: %s" % hex(address))
-        byte_r = cpu.read_byte(address)
+        byte_r = cpu.zero_page_x()
         print("LDA zero page byte read: %s" % hex(byte_r))
-        cpu.a = byte_r
-        check_processor_flags_routine(cpu)
+        cpu.load_register_a(byte_r)
 
 
 class LDAAbsolute(object):
@@ -61,12 +47,9 @@ class LDAAbsolute(object):
         super(LDAAbsolute, self).__init__()
 
     def run(self, cpu):
-        address = cpu.fetch_word()
-        print("LDA absolute Address: %s" % hex(address))
-        byte_r = cpu.read_byte(address)
+        byte_r = cpu.absolute()
         print("LDA absolute byte read: %s" % hex(byte_r))
-        cpu.a = byte_r
-        check_processor_flags_routine(cpu)
+        cpu.load_register_a(byte_r)
 
 
 class LDAAbsoluteX(object):
@@ -75,15 +58,9 @@ class LDAAbsoluteX(object):
         super(LDAAbsoluteX, self).__init__()
 
     def run(self, cpu):
-        address = cpu.fetch_word() + cpu.x
-        if address > 0xffff:
-            address = address & 0xffff
-            cpu.cycles += 1
-        print("LDA absolute X Address: %s" % hex(address))
-        byte_r = cpu.read_byte(address)
+        byte_r = cpu.absolute_x()
         print("LDA absolute X byte read: %s" % hex(byte_r))
-        cpu.a = byte_r
-        check_processor_flags_routine(cpu)
+        cpu.load_register_a(byte_r)
 
 
 class LDAAbsoluteY(object):
@@ -92,15 +69,9 @@ class LDAAbsoluteY(object):
         super(LDAAbsoluteY, self).__init__()
 
     def run(self, cpu):
-        address = cpu.fetch_word() + cpu.y
-        if address > 0xffff:
-            address = address & 0xffff
-            cpu.cycles += 1
-        print("LDA absolute Y Address: %s" % hex(address))
-        byte_r = cpu.read_byte(address)
+        byte_r = cpu.absolute_y()
         print("LDA absolute Y byte read: %s" % hex(byte_r))
-        cpu.a = byte_r
-        check_processor_flags_routine(cpu)
+        cpu.load_register_a(byte_r)
 
 
 class LDAIndirectX(object):
@@ -109,15 +80,9 @@ class LDAIndirectX(object):
         super(LDAIndirectX, self).__init__()
 
     def run(self, cpu):
-        zp_address = cpu.fetch_byte() + cpu.x
-        zp_address = zp_address & 0xff
-        cpu.cycles += 1
-        address = cpu.read_word(zp_address)
-        print("LDA indirect X Address: %s" % hex(address))
-        byte_r = cpu.read_byte(address)
+        byte_r = cpu.indirect_x()
         print("LDA indirect X byte read: %s" % hex(byte_r))
-        cpu.a = byte_r
-        check_processor_flags_routine(cpu)
+        cpu.load_register_a(byte_r)
 
 
 class LDAIndirectY(object):
@@ -126,15 +91,6 @@ class LDAIndirectY(object):
         super(LDAIndirectY, self).__init__()
 
     def run(self, cpu):
-        zp_address = cpu.fetch_byte()
-        address = cpu.read_word(zp_address) + cpu.y
-        
-        if address > 0xffff:
-            address = address & 0xffff
-            cpu.cycles += 1
-
-        print("LDA indirect y Address: %s" % hex(address))
-        byte_r = cpu.read_byte(address)
+        byte_r = cpu.indirect_y()
         print("LDA indirect y byte read: %s" % hex(byte_r))
-        cpu.a = byte_r
-        check_processor_flags_routine(cpu)
+        cpu.load_register_a(byte_r)

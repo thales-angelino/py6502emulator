@@ -4,6 +4,10 @@ PAGE_SIZE = 256
 MEM_SIZE = 65536
 START_ADDRESS = 0xfffc
 
+LSB_7BITS_ENABLED_MASK = 0x7f 
+OVERFLOW_MASK = 0x80
+
+
 OPCODES_TABLE = {
     lda.LDA_IMMEDIATE_OPCODE: lda.LDAImmediate(),
     lda.LDA_ZEROPAGE_OPCODE: lda.LDAZeroPage(),
@@ -144,35 +148,115 @@ class CPU(object):
         word = (msb << 8) | lsb
         return word
 
+    def check_processor_flags_routine(self, register):
+        if (register == 0):
+            self.processor_status['zero'] = 1
+        if (register & 0b10000000) > 0:
+            self.processor_status['negative'] = 1
+
+    def load_register_a(self, value):
+        self.a = value
+        self.check_processor_flags_routine(self.a)
+
+    def load_register_x(self, value):
+        self.x = value
+        self.check_processor_flags_routine(self.x)
+
+    def load_register_y(self, value):
+        self.y = value
+        self.check_processor_flags_routine(self.y)
+
+    def adc(self, value):
+        """
+        http://www.righto.com/2012/12/the-6502-overflow-flag-explained.html
+
+        It should also check the processor status decimal flag.
+        """
+        result = self.a + value + self.processor_status['carry']
+        c6 = ((self.a & LSB_7BITS_ENABLED_MASK) +
+              (value & LSB_7BITS_ENABLED_MASK) + 
+              self.processor_status['carry']) & OVERFLOW_MASK
+        if c6:
+            c6 = 1
+        self.a = (result & 0xff)
+
+        self.processor_status['carry'] = 0
+        if result > 0xff:
+            self.processor_status['carry'] = 1
+        
+        if c6 ^ self.processor_status['carry']:
+            self.processor_status['overflow'] = 1
+
+        self.check_processor_flags_routine(self.a)
+
+    def immediate(self):
+        return self.fetch_byte()
+
+    def zero_page(self):
+        address = self.fetch_byte()
+        print("Reading From Zero Page Address: %s" % hex(address))
+        value = self.read_byte(address)
+        return value
+
+    def zero_page_x(self):
+        address = self.fetch_byte() + self.x
+        self.cycles += 1
+        # Truncate if the address is exceeded
+        if address > 0xff:
+            address = address & 0xff
+        print("Reading Zero Page X Address: %s" % hex(address))
+        value = self.read_byte(address)
+        return value
+
+    def absolute(self):
+        address = self.fetch_word()
+        print("Reading Absolute Address: %s" % hex(address))
+        value = self.read_byte(address)
+        return value
+
+    def absolute_x(self):
+        address = self.fetch_word() + self.x
+        if address > 0xffff:
+            address = address & 0xffff
+            self.cycles += 1
+        print("Reading Absolute X Address: %s" % hex(address))
+        value = self.read_byte(address)
+        return value
+
+    def absolute_y(self):
+        address = self.fetch_word() + self.y
+        if address > 0xffff:
+            address = address & 0xffff
+            self.cycles += 1
+        print("Reading Absolute Y Address: %s" % hex(address))
+        value = self.read_byte(address)
+        return value
+
+    def indirect_x(self):
+        zp_address = self.fetch_byte() + self.x
+        zp_address = zp_address & 0xff
+        self.cycles += 1
+        address = self.read_word(zp_address)
+        print("Reading Indirect X Address: %s" % hex(address))
+        value = self.read_byte(address)
+        return value
+
+    def indirect_y(self):
+        zp_address = self.fetch_byte()
+        address = self.read_word(zp_address) + self.y
+        if address > 0xffff:
+            address = address & 0xffff
+            self.cycles += 1
+        print("Reading Indirect Y Address: %s" % hex(address))
+        value = self.read_byte(address)
+        return value
+
 def main():
     memory = Memory()
     cpu = CPU(memory)
     cpu.reset()
     cpu.execute(1)
 
-'''
-m6502::Word m6502::CPU::AddrIndirectX( s32& Cycles, const Mem& memory )
-{
-    Byte ZPAddress = FetchByte( Cycles, memory );
-    ZPAddress += X;
-    Cycles--;
-    Word EffectiveAddr = ReadWord( Cycles, ZPAddress, memory );
-    return EffectiveAddr;
-}
-
-m6502::Word m6502::CPU::AddrIndirectY( s32& Cycles, const Mem& memory )
-{
-    Byte ZPAddress = FetchByte( Cycles, memory );
-    Word EffectiveAddr = ReadWord( Cycles, ZPAddress, memory );
-    Word EffectiveAddrY = EffectiveAddr + Y;
-    const bool CrossedPageBoundary = (EffectiveAddr ^ EffectiveAddrY) >> 8;
-    if ( CrossedPageBoundary )
-    {
-        Cycles--;
-    }
-    return EffectiveAddrY;
-}
-'''
 
 if __name__ == '__main__':
     main()

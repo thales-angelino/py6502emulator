@@ -15,7 +15,7 @@ class TestADC(unittest.TestCase):
         expected_overflow = 0
         expected_carry = 0
         self.cpu.a = 0x50
-        adc.adc(self.cpu, operand)
+        self.cpu.adc(operand)
         self.assertEqual(self.cpu.processor_status['carry'], expected_carry, "CPU Carry flag should be %d" % expected_carry)
         self.assertEqual(self.cpu.processor_status['overflow'], expected_overflow, "CPU Overflow flag should be %d" % expected_overflow)
         self.assertEqual(self.cpu.a, expected_value, "CPU Register A should be %s" % hex(expected_value))
@@ -26,7 +26,7 @@ class TestADC(unittest.TestCase):
         expected_overflow = 1
         expected_carry = 0
         self.cpu.a = 0x50
-        adc.adc(self.cpu, operand)
+        self.cpu.adc(operand)
         self.assertEqual(self.cpu.processor_status['carry'], expected_carry, "CPU Carry flag should be %d" % expected_carry)
         self.assertEqual(self.cpu.processor_status['overflow'], expected_overflow, "CPU Overflow flag should be %d" % expected_overflow)
         self.assertEqual(self.cpu.a, expected_value, "CPU Register A should be %s" % hex(expected_value))
@@ -37,7 +37,7 @@ class TestADC(unittest.TestCase):
         expected_overflow = 0
         expected_carry = 0
         self.cpu.a = 0x50
-        adc.adc(self.cpu, operand)
+        self.cpu.adc(operand)
         self.assertEqual(self.cpu.processor_status['carry'], expected_carry, "CPU Carry flag should be %d" % expected_carry)
         self.assertEqual(self.cpu.processor_status['overflow'], expected_overflow, "CPU Overflow flag should be %d" % expected_overflow)
         self.assertEqual(self.cpu.a, expected_value, "CPU Register A should be %s" % hex(expected_value))
@@ -48,7 +48,7 @@ class TestADC(unittest.TestCase):
         expected_overflow = 0
         expected_carry = 1
         self.cpu.a = 0x50
-        adc.adc(self.cpu, operand)
+        self.cpu.adc(operand)
         self.assertEqual(self.cpu.processor_status['carry'], expected_carry, "CPU Carry flag should be %d" % expected_carry)
         self.assertEqual(self.cpu.processor_status['overflow'], expected_overflow, "CPU Overflow flag should be %d" % expected_overflow)
         self.assertEqual(self.cpu.a, expected_value, "CPU Register A should be %s" % hex(expected_value))
@@ -59,7 +59,7 @@ class TestADC(unittest.TestCase):
         expected_overflow = 0
         expected_carry = 0
         self.cpu.a = 0xd0
-        adc.adc(self.cpu, operand)
+        self.cpu.adc(operand)
         self.assertEqual(self.cpu.processor_status['carry'], expected_carry, "CPU Carry flag should be %d" % expected_carry)
         self.assertEqual(self.cpu.processor_status['overflow'], expected_overflow, "CPU Overflow flag should be %d" % expected_overflow)
         self.assertEqual(self.cpu.a, expected_value, "CPU Register A should be %s" % hex(expected_value))
@@ -70,7 +70,7 @@ class TestADC(unittest.TestCase):
         expected_overflow = 0
         expected_carry = 1
         self.cpu.a = 0xd0
-        adc.adc(self.cpu, operand)
+        self.cpu.adc(operand)
         self.assertEqual(self.cpu.processor_status['carry'], expected_carry, "CPU Carry flag should be %d" % expected_carry)
         self.assertEqual(self.cpu.processor_status['overflow'], expected_overflow, "CPU Overflow flag should be %d" % expected_overflow)
         self.assertEqual(self.cpu.a, expected_value, "CPU Register A should be %s" % hex(expected_value))
@@ -81,7 +81,7 @@ class TestADC(unittest.TestCase):
         expected_overflow = 1
         expected_carry = 1
         self.cpu.a = 0xd0
-        adc.adc(self.cpu, operand)
+        self.cpu.adc(operand)
         self.assertEqual(self.cpu.processor_status['carry'], expected_carry, "CPU Carry flag should be %d" % expected_carry)
         self.assertEqual(self.cpu.processor_status['overflow'], expected_overflow, "CPU Overflow flag should be %d" % expected_overflow)
         self.assertEqual(self.cpu.a, expected_value, "CPU Register A should be %s" % hex(expected_value))
@@ -92,7 +92,7 @@ class TestADC(unittest.TestCase):
         expected_overflow = 0
         expected_carry = 1
         self.cpu.a = 0xd0
-        adc.adc(self.cpu, operand)
+        self.cpu.adc(operand)
         self.assertEqual(self.cpu.processor_status['carry'], expected_carry, "CPU Carry flag should be %d" % expected_carry)
         self.assertEqual(self.cpu.processor_status['overflow'], expected_overflow, "CPU Overflow flag should be %d" % expected_overflow)
         self.assertEqual(self.cpu.a, expected_value, "CPU Register A should be %s" % hex(expected_value))
@@ -104,7 +104,7 @@ class TestADC(unittest.TestCase):
         expected_carry = 0
         self.cpu.a = 0xd0
         self.cpu.processor_status['carry'] = 1
-        adc.adc(self.cpu, operand)
+        self.cpu.adc(operand)
         self.assertEqual(self.cpu.processor_status['carry'], expected_carry, "CPU Carry flag should be %d" % expected_carry)
         self.assertEqual(self.cpu.processor_status['overflow'], expected_overflow, "CPU Overflow flag should be %d" % expected_overflow)
         self.assertEqual(self.cpu.a, expected_value, "CPU Register A should be %s" % hex(expected_value))
