@@ -13,7 +13,7 @@ class ADCImmediate(object):
         super(ADCImmediate, self).__init__()
 
     def run(self, cpu):
-        byte_r = cpu.fetch_byte()
+        byte_r = cpu.immediate()
         print("ADC memory byte read: %s" % hex(byte_r))
         print("ADC register A read: %s" % hex(cpu.a))
         print("ADC processor status Carry read: %s" % hex(cpu.processor_status['carry']))
@@ -26,9 +26,7 @@ class ADCZeroPage(object):
         super(ADCZeroPage, self).__init__()
 
     def run(self, cpu):
-        address = cpu.fetch_byte()
-        print("ADC absolute Address: %s" % hex(address))
-        byte_r = cpu.read_byte(address)
+        byte_r = cpu.zero_page()
         print("ADC zero page byte read: %s" % hex(byte_r))
         print("ADC register A read: %s" % hex(cpu.a))
         print("ADC processor status Carry read: %s" % hex(cpu.processor_status['carry']))
@@ -41,12 +39,7 @@ class ADCZeroPageX(object):
         super(ADCZeroPageX, self).__init__()
 
     def run(self, cpu):
-        address = cpu.fetch_byte() + cpu.x
-        cpu.cycles += 1
-        # Truncate if the address is exceeded
-        if address > 0xff:
-            address = address & 0xff
-        byte_r = cpu.read_byte(address)
+        byte_r = cpu.zero_page_x()
         print("ADC zero page X byte read: %s" % hex(byte_r))
         print("ADC register A read: %s" % hex(cpu.a))
         print("ADC processor status carry read: %s" % hex(cpu.processor_status['carry']))
@@ -59,8 +52,7 @@ class ADCAbsolute(object):
         super(ADCAbsolute, self).__init__()
 
     def run(self, cpu):
-        address = cpu.fetch_word()
-        byte_r = cpu.read_byte(address)
+        byte_r = cpu.absolute()
         print("ADC absolute byte read: %s" % hex(byte_r))
         print("ADC register A read: %s" % hex(cpu.a))
         print("ADC processor status carry read: %s" % hex(cpu.processor_status['carry']))
@@ -73,11 +65,7 @@ class ADCAbsoluteX(object):
         super(ADCAbsoluteX, self).__init__()
 
     def run(self, cpu):
-        address = cpu.fetch_word() + cpu.x
-        if address > 0xffff:
-            address = address & 0xffff
-            cpu.cycles += 1
-        byte_r = cpu.read_byte(address)
+        byte_r = cpu.absolute_x()
         print("ADC absolute x byte read: %s" % hex(byte_r))
         print("ADC register A read: %s" % hex(cpu.a))
         print("ADC processor status carry read: %s" % hex(cpu.processor_status['carry']))
@@ -90,11 +78,7 @@ class ADCAbsoluteY(object):
         super(ADCAbsoluteY, self).__init__()
 
     def run(self, cpu):
-        address = cpu.fetch_word() + cpu.y
-        if address > 0xffff:
-            address = address & 0xffff
-            cpu.cycles += 1
-        byte_r = cpu.read_byte(address)
+        byte_r = cpu.absolute_y()
         print("ADC absolute Y byte read: %s" % hex(byte_r))
         print("ADC register A read: %s" % hex(cpu.a))
         print("ADC processor status carry read: %s" % hex(cpu.processor_status['carry']))
@@ -107,11 +91,7 @@ class ADCIndirectX(object):
         super(ADCIndirectX, self).__init__()
 
     def run(self, cpu):
-        zp_address = cpu.fetch_byte() + cpu.x
-        zp_address = zp_address & 0xff
-        cpu.cycles += 1
-        address = cpu.read_word(zp_address)
-        byte_r = cpu.read_byte(address)
+        byte_r = cpu.indirect_x()
         print("ADC indirect X byte read: %s" % hex(byte_r))
         print("ADC register A read: %s" % hex(cpu.a))
         print("ADC processor status carry read: %s" % hex(cpu.processor_status['carry']))
@@ -124,12 +104,7 @@ class ADCIndirectY(object):
         super(ADCIndirectY, self).__init__()
 
     def run(self, cpu):
-        zp_address = cpu.fetch_byte()
-        address = cpu.read_word(zp_address) + cpu.y        
-        if address > 0xffff:
-            address = address & 0xffff
-            cpu.cycles += 1
-        byte_r = cpu.read_byte(address)
+        byte_r = cpu.indirect_y()
         print("ADC indirect Y byte read: %s" % hex(byte_r))
         print("ADC register A read: %s" % hex(cpu.a))
         print("ADC processor status Carry read: %s" % hex(cpu.processor_status['carry']))

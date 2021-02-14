@@ -26,6 +26,7 @@ class LDYZeroPage(object):
         print("LDY zero page byte read: %s" % hex(byte_r))
         cpu.load_register_y(byte_r)
 
+
 class LDYZeroPageX(object):
     """LDY Zero Page X instruction"""
     def __init__(self):
