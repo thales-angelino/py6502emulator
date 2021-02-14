@@ -57,21 +57,25 @@ class Memory(object):
             print ("Address %s: %s" % (hex(i), hex(self.memory[i])))
 
 class CPU(object):
-    """CPU"""
+    """6502 CPU"""
     def __init__(self, memory):
         super(CPU, self).__init__()
         self.memory = memory
         """
-        The program counter is a 16 bit register which points to the next instruction to be executed.
-        The value of program counter is modified automatically as instructions are executed.
+        The program counter is a 16 bit register which points to the next
+        instruction to be executed.
+        The value of program counter is modified automatically as instructions
+        are executed.
 
-        The value of the program counter can be modified by executing a jump, a relative branch or
-        a subroutine call to another memory address or by returning from a subroutine or interrupt.
+        The value of the program counter can be modified by executing a jump, 
+        a relative branch or a subroutine call to another memory address or by
+        returning from a subroutine or interrupt.
         """
         self.program_counter = 0x00
         """
         The processor supports a 256 byte stack located between $0100 and $01FF. 
-        The stack pointer is an 8 bit register and holds the low 8 bits of the next free location on the stack.
+        The stack pointer is an 8 bit register and holds the low 8 bits of the
+        next free location on the stack.
         The location of the stack is fixed and cannot be moved.
 
         Pushing bytes to the stack causes the stack pointer to be decremented.
@@ -205,6 +209,16 @@ class CPU(object):
         if address > 0xff:
             address = address & 0xff
         print("Reading Zero Page X Address: %s" % hex(address))
+        value = self.read_byte(address)
+        return value
+
+    def zero_page_y(self):
+        address = self.fetch_byte() + self.y
+        self.cycles += 1
+        # Truncate if the address is exceeded
+        if address > 0xff:
+            address = address & 0xff
+        print("Reading Zero Page Y Address: %s" % hex(address))
         value = self.read_byte(address)
         return value
 

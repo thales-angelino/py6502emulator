@@ -11,7 +11,7 @@ class LDXImmediate(object):
         super(LDXImmediate, self).__init__()
 
     def run(self, cpu):
-        byte_r = cpu.fetch_byte()
+        byte_r = cpu.immediate()
         print("LDX immediate byte read: %s" % hex(byte_r))
         cpu.load_register_x(byte_r)
 
@@ -22,9 +22,7 @@ class LDXZeroPage(object):
         super(LDXZeroPage, self).__init__()
 
     def run(self, cpu):
-        address = cpu.fetch_byte()
-        print("LDX zero page Address: %s" % hex(address))
-        byte_r = cpu.read_byte(address)
+        byte_r = cpu.zero_page()
         print("LDX zero page byte read: %s" % hex(byte_r))
         cpu.load_register_x(byte_r)
 
@@ -34,14 +32,7 @@ class LDXZeroPageY(object):
         super(LDXZeroPageY, self).__init__()
 
     def run(self, cpu):
-        address = cpu.fetch_byte() + cpu.y
-        cpu.cycles += 1
-        # Truncate if the address is exceeded
-        if address > 0xff:
-            address = address & 0xff
-
-        print("LDX zero page Y Address: %s" % hex(address))
-        byte_r = cpu.read_byte(address)
+        byte_r = cpu.zero_page_y()
         print("LDX zero page Y byte read: %s" % hex(byte_r))
         cpu.load_register_x(byte_r)
 
@@ -52,9 +43,7 @@ class LDXAbsolute(object):
         super(LDXAbsolute, self).__init__()
 
     def run(self, cpu):
-        address = cpu.fetch_word()
-        print("LDX absolute Address: %s" % hex(address))
-        byte_r = cpu.read_byte(address)
+        byte_r = cpu.absolute()
         print("LDX absolute byte read: %s" % hex(byte_r))
         cpu.load_register_x(byte_r)
 
@@ -65,11 +54,6 @@ class LDXAbsoluteY(object):
         super(LDXAbsoluteY, self).__init__()
 
     def run(self, cpu):
-        address = cpu.fetch_word() + cpu.y
-        if address > 0xffff:
-            address = address & 0xffff
-            cpu.cycles += 1
-        print("LDX absolute Y Address: %s" % hex(address))
-        byte_r = cpu.read_byte(address)
+        byte_r = cpu.absolute_y()
         print("LDX absolute Y byte read: %s" % hex(byte_r))
         cpu.load_register_x(byte_r)
