@@ -1,4 +1,4 @@
-from instructions import lda, ldx, ldy, adc, _and, asl, lsr, rol, ror
+from instructions import lda, ldx, ldy, adc, _and, asl, lsr, rol, ror, eor
 
 PAGE_SIZE = 256
 MEM_SIZE = 65536
@@ -63,6 +63,14 @@ OPCODES_TABLE = {
     ror.ROR_ZEROPAGEX_OPCODE: ror.RORZeroPageX(),
     ror.ROR_ABSOLUTE_OPCODE: ror.RORAbsolute(),
     ror.ROR_ABSOLUTEX_OPCODE: ror.RORAbsoluteX(),
+    eor.EOR_IMMEDIATE_OPCODE: eor.EORImmediate(),
+    eor.EOR_ZEROPAGE_OPCODE: eor.EORZeroPage(),
+    eor.EOR_ZEROPAGEX_OPCODE: eor.EORZeroPageX(),
+    eor.EOR_ABSOLUTE_OPCODE: eor.EORAbsolute(),
+    eor.EOR_ABSOLUTEX_OPCODE: eor.EORAbsoluteX(),
+    eor.EOR_ABSOLUTEY_OPCODE: eor.EORAbsoluteY(),
+    eor.EOR_INDIRECTX_OPCODE: eor.EORIndirectX(),
+    eor.EOR_INDIRECTY_OPCODE: eor.EORIndirectY(),
 }
 
 class Memory(object):
@@ -228,6 +236,20 @@ class CPU(object):
 
     def _and(self, value):
         result = (self.a & value)
+        self.a = result
+        self.check_processor_flags_routine(self.a)
+
+    def eor(self, value):
+        '''Exclusive OR'''
+        result = (self.a ^ value)
+        self.a = result
+        print "here"
+        print hex(result)
+        self.check_processor_flags_routine(self.a)
+
+    def ora(self, value):
+        '''Inclusive OR'''
+        result = (self.a | value)
         self.a = result
         self.check_processor_flags_routine(self.a)
 
