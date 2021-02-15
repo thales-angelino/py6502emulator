@@ -10,10 +10,7 @@ class ASLAccumulator(object):
         super(ASLAccumulator, self).__init__()
 
     def run(self, cpu):
-        print hex(cpu.a)
         cpu.asl()
-
-        print hex(cpu.a)
 
 
 class ASLZeroPage(object):
