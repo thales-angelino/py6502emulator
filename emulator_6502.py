@@ -1,4 +1,4 @@
-from instructions import lda, ldx, ldy, adc, _and
+from instructions import lda, ldx, ldy, adc, _and, asl
 
 PAGE_SIZE = 256
 MEM_SIZE = 65536
@@ -43,6 +43,11 @@ OPCODES_TABLE = {
     _and.AND_ABSOLUTEY_OPCODE: _and.ANDAbsoluteY(),
     _and.AND_INDIRECTX_OPCODE: _and.ANDIndirectX(),
     _and.AND_INDIRECTY_OPCODE: _and.ANDIndirectY(),
+    asl.ASL_ACCUMULATOR_OPCODE: asl.ASLAccumulator(),
+    asl.ASL_ZEROPAGE_OPCODE: asl.ASLZeroPage(),
+    asl.ASL_ZEROPAGEX_OPCODE: asl.ASLZeroPageX(),
+    asl.ASL_ABSOLUTE_OPCODE: asl.ASLAbsolute(),
+    asl.ASL_ABSOLUTEX_OPCODE: asl.ASLAbsoluteX(),
 }
 
 class Memory(object):
@@ -160,6 +165,11 @@ class CPU(object):
         word = (msb << 8) | lsb
         return word
 
+    def write_byte(self, address, value):
+        self.memory.memory[address] = value
+        self.cycles += 1
+        return value
+
     def check_processor_flags_routine(self, register):
         if (register == 0):
             self.processor_status['zero'] = 1
@@ -205,6 +215,28 @@ class CPU(object):
         result = (self.a & value)
         self.a = result
         self.check_processor_flags_routine(self.a)
+
+    def asl(self, address=None):
+        if address is None:
+            self.cycles += 1
+            # Perform the operation on the A register
+            if (self.a & 0b10000000) > 0:
+                self.processor_status['carry'] = 1
+            else:
+                self.processor_status['carry'] = 0
+            result = ((self.a << 1) & 0xff)
+            self.a = result
+            self.check_processor_flags_routine(self.a)
+        else:
+            value = self.read_byte(address)
+            self.cycles += 1
+            if (value & 0b10000000) > 0:
+                self.processor_status['carry'] = 1
+            else:
+                self.processor_status['carry'] = 0
+            result = ((value << 1) & 0xff)
+            self.write_byte(address, result)
+            self.check_processor_flags_routine(result)
 
     # Memory access methods
 
