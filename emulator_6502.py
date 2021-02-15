@@ -1,4 +1,4 @@
-from instructions import lda, ldx, ldy, adc, _and, asl, lsr
+from instructions import lda, ldx, ldy, adc, _and, asl, lsr, rol
 
 PAGE_SIZE = 256
 MEM_SIZE = 65536
@@ -53,6 +53,11 @@ OPCODES_TABLE = {
     lsr.LSR_ZEROPAGEX_OPCODE: lsr.LSRZeroPageX(),
     lsr.LSR_ABSOLUTE_OPCODE: lsr.LSRAbsolute(),
     lsr.LSR_ABSOLUTEX_OPCODE: lsr.LSRAbsoluteX(),
+    rol.ROL_ACCUMULATOR_OPCODE: rol.ROLAccumulator(),
+    rol.ROL_ZEROPAGE_OPCODE: rol.ROLZeroPage(),
+    rol.ROL_ZEROPAGEX_OPCODE: rol.ROLZeroPageX(),
+    rol.ROL_ABSOLUTE_OPCODE: rol.ROLAbsolute(),
+    rol.ROL_ABSOLUTEX_OPCODE: rol.ROLAbsoluteX(),
 }
 
 class Memory(object):
@@ -264,6 +269,30 @@ class CPU(object):
             result = ((value >> 1) & 0xff)
             self.write_byte(address, result)
             self.check_processor_flags_routine(result)
+
+    def rol(self, address=None):
+        carry = self.processor_status['carry']
+        if address is None:
+            self.cycles += 1
+            # Perform the operation on the A register
+            if (self.a & 0b10000000) > 0:
+                self.processor_status['carry'] = 1
+            else:
+                self.processor_status['carry'] = 0
+            result = ((self.a << 1) & 0xff) + carry
+            self.a = result
+            self.check_processor_flags_routine(self.a)
+        else:
+            value = self.read_byte(address)
+            self.cycles += 1
+            if (value & 0b10000000) > 0:
+                self.processor_status['carry'] = 1
+            else:
+                self.processor_status['carry'] = 0
+            result = ((value << 1) & 0xff) + carry
+            self.write_byte(address, result)
+            self.check_processor_flags_routine(result)
+
 
     # Memory access methods
 
