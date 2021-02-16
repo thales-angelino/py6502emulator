@@ -1,4 +1,4 @@
-from instructions import lda, ldx, ldy, adc, _and, asl, lsr, rol, ror, eor, ora, sbc
+from instructions import lda, ldx, ldy, adc, _and, asl, lsr, rol, ror, eor, ora, sbc, sta
 
 PAGE_SIZE = 256
 MEM_SIZE = 65536
@@ -87,6 +87,13 @@ OPCODES_TABLE = {
     sbc.SBC_ABSOLUTEY_OPCODE: sbc.SBCAbsoluteY(),
     sbc.SBC_INDIRECTX_OPCODE: sbc.SBCIndirectX(),
     sbc.SBC_INDIRECTY_OPCODE: sbc.SBCIndirectY(),
+    sta.STA_ZEROPAGE_OPCODE: sta.STAZeroPage(),
+    sta.STA_ZEROPAGEX_OPCODE: sta.STAZeroPageX(),
+    sta.STA_ABSOLUTE_OPCODE: sta.STAAbsolute(),
+    sta.STA_ABSOLUTEX_OPCODE: sta.STAAbsoluteX(),
+    sta.STA_ABSOLUTEY_OPCODE: sta.STAAbsoluteY(),
+    sta.STA_INDIRECTX_OPCODE: sta.STAIndirectX(),
+    sta.STA_INDIRECTY_OPCODE: sta.STAIndirectY(),
 }
 
 class Memory(object):
@@ -270,6 +277,9 @@ class CPU(object):
         result = (self.a | value)
         self.a = result
         self.check_processor_flags_routine(self.a)
+
+    def sta(self, address):
+        self.write_byte(address, self.a)
 
     def asl(self, address=None):
         if address is None:
