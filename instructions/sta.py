@@ -36,8 +36,6 @@ class STAAbsolute(object):
     def run(self, cpu):
         address = cpu.fetch_word()
         cpu.sta(address)
-        print "Cycles"
-        print cpu.cycles
 
 
 class STAAbsoluteX(object):
