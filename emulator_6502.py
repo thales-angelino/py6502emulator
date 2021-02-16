@@ -1,4 +1,4 @@
-from instructions import lda, ldx, ldy, adc, _and, asl, lsr, rol, ror, eor
+from instructions import lda, ldx, ldy, adc, _and, asl, lsr, rol, ror, eor, ora, sbc
 
 PAGE_SIZE = 256
 MEM_SIZE = 65536
@@ -71,6 +71,22 @@ OPCODES_TABLE = {
     eor.EOR_ABSOLUTEY_OPCODE: eor.EORAbsoluteY(),
     eor.EOR_INDIRECTX_OPCODE: eor.EORIndirectX(),
     eor.EOR_INDIRECTY_OPCODE: eor.EORIndirectY(),
+    ora.ORA_IMMEDIATE_OPCODE: ora.ORAImmediate(),
+    ora.ORA_ZEROPAGE_OPCODE: ora.ORAZeroPage(),
+    ora.ORA_ZEROPAGEX_OPCODE: ora.ORAZeroPageX(),
+    ora.ORA_ABSOLUTE_OPCODE: ora.ORAAbsolute(),
+    ora.ORA_ABSOLUTEX_OPCODE: ora.ORAAbsoluteX(),
+    ora.ORA_ABSOLUTEY_OPCODE: ora.ORAAbsoluteY(),
+    ora.ORA_INDIRECTX_OPCODE: ora.ORAIndirectX(),
+    ora.ORA_INDIRECTY_OPCODE: ora.ORAIndirectY(),
+    sbc.SBC_IMMEDIATE_OPCODE: sbc.SBCImmediate(),
+    sbc.SBC_ZEROPAGE_OPCODE: sbc.SBCZeroPage(),
+    sbc.SBC_ZEROPAGEX_OPCODE: sbc.SBCZeroPageX(),
+    sbc.SBC_ABSOLUTE_OPCODE: sbc.SBCAbsolute(),
+    sbc.SBC_ABSOLUTEX_OPCODE: sbc.SBCAbsoluteX(),
+    sbc.SBC_ABSOLUTEY_OPCODE: sbc.SBCAbsoluteY(),
+    sbc.SBC_INDIRECTX_OPCODE: sbc.SBCIndirectX(),
+    sbc.SBC_INDIRECTY_OPCODE: sbc.SBCIndirectY(),
 }
 
 class Memory(object):
@@ -211,6 +227,10 @@ class CPU(object):
         self.y = value
         self.check_processor_flags_routine(self.y)
 
+    def sbc(self, value): 
+        value_1comp = value ^ 0xff
+        self.adc(value_1comp)
+
     def adc(self, value):
         """
         http://www.righto.com/2012/12/the-6502-overflow-flag-explained.html
@@ -243,8 +263,6 @@ class CPU(object):
         '''Exclusive OR'''
         result = (self.a ^ value)
         self.a = result
-        print "here"
-        print hex(result)
         self.check_processor_flags_routine(self.a)
 
     def ora(self, value):
