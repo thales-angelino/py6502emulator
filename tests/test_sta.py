@@ -1,6 +1,6 @@
 import unittest
-import emulator_6502 as emulator
-from instructions import sta
+from emulator_6502 import emulator_6502 as emulator
+from emulator_6502.instructions import sta
 
 
 class TestSTA(unittest.TestCase):

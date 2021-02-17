@@ -1,6 +1,6 @@
 import unittest
-import emulator_6502 as emulator
-from instructions import _and
+from emulator_6502 import emulator_6502 as emulator
+from emulator_6502.instructions import _and
 
 
 class TestAND(unittest.TestCase):
