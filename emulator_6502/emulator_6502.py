@@ -1,4 +1,4 @@
-from instructions import lda, ldx, ldy, adc, _and, asl, lsr, rol, ror, eor, ora, sbc, sta, stx, sty
+from instructions import lda, ldx, ldy, adc, _and, asl, lsr, rol, ror, eor, ora, sbc, sta, stx, sty, bcc
 
 PAGE_SIZE = 256
 MEM_SIZE = 65536
@@ -100,6 +100,7 @@ OPCODES_TABLE = {
     sty.STY_ZEROPAGE_OPCODE: sty.STYZeroPage(),
     sty.STY_ZEROPAGEX_OPCODE: sty.STYZeroPageX(),
     sty.STY_ABSOLUTE_OPCODE: sty.STYAbsolute(),
+    bcc.BCC_RELATIVE_OPCODE: bcc.BCCRelative(),
 }
 
 class Memory(object):
@@ -136,7 +137,7 @@ class CPU(object):
         a relative branch or a subroutine call to another memory address or by
         returning from a subroutine or interrupt.
         """
-        self.program_counter = 0x00
+        self.program_counter = START_ADDRESS
         """
         The processor supports a 256 byte stack located between $0100 and $01FF. 
         The stack pointer is an 8 bit register and holds the low 8 bits of the
@@ -243,6 +244,20 @@ class CPU(object):
     def sbc(self, value): 
         value_1comp = value ^ 0xff
         self.adc(value_1comp)
+
+    def bcc(self, offset):
+        if self.processor_status['carry'] is 0:
+            self.branch(offset)
+
+    def branch(self, offset):
+        old_pc = self.program_counter
+        if (offset & 0b10000000) > 0:
+            self.program_counter -= (offset ^ 0xff)
+        else:
+            self.program_counter += offset
+        page_changed = (self.program_counter >> 8) != (old_pc >> 8)
+        if page_changed:
+            self.cycles += 1
 
     def adc(self, value):
         """

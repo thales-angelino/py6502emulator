@@ -3,13 +3,13 @@ from emulator_6502 import emulator_6502 as emulator
 from emulator_6502.instructions import ora
 
 
-class TestEOR(unittest.TestCase):
+class TestORA(unittest.TestCase):
     def setUp(self):
         self.memory = emulator.Memory()
         self.cpu = emulator.CPU(self.memory)
         self.cpu.reset()
 
-    def test_eor_immediate(self):
+    def test_ora_immediate(self):
         expected_cycles = 2
         value = 0xa0
         self.cpu.a = 0x0a
@@ -20,7 +20,7 @@ class TestEOR(unittest.TestCase):
         self.assertEqual(self.cpu.a, expected_value, "Register A should contain: %s" % hex(expected_value))
         self.assertEqual(self.cpu.cycles, expected_cycles, "CPU cycles should be %d" % expected_cycles)
 
-    def test_eor_absolute(self):
+    def test_ora_absolute(self):
         expected_cycles = 4
         value = 0xa0
         self.cpu.a = 0x0f
@@ -33,7 +33,7 @@ class TestEOR(unittest.TestCase):
         self.assertEqual(self.cpu.a, expected_value, "Register A should contain: %s" % hex(expected_value))
         self.assertEqual(self.cpu.cycles, expected_cycles, "CPU cycles should be %d" % expected_cycles)
 
-    def test_eor_absolutex(self):
+    def test_ora_absolutex(self):
         expected_cycles = 4
         value = 0xa0
         expected_value = 0xf0
@@ -47,7 +47,7 @@ class TestEOR(unittest.TestCase):
         self.assertEqual(self.cpu.a, expected_value, "Register A should contain: %s" % hex(expected_value))
         self.assertEqual(self.cpu.cycles, expected_cycles, "CPU cycles should be %d" % expected_cycles)
 
-    def test_eor_absolutey(self):
+    def test_ora_absolutey(self):
         expected_cycles = 4
         value = 0xaa
         expected_value = 0xaa
@@ -61,7 +61,7 @@ class TestEOR(unittest.TestCase):
         self.assertEqual(self.cpu.a, expected_value, "Register A should contain: %s" % hex(expected_value))
         self.assertEqual(self.cpu.cycles, expected_cycles, "CPU cycles should be %d" % expected_cycles)
 
-    def test_eor_zeropage(self):
+    def test_ora_zeropage(self):
         expected_cycles = 3
         value = 0xa0
         expected_value = 0xa0
@@ -73,7 +73,7 @@ class TestEOR(unittest.TestCase):
         self.assertEqual(self.cpu.a, expected_value, "Register A should contain: %s" % hex(expected_value))
         self.assertEqual(self.cpu.cycles, expected_cycles, "CPU cycles should be %d" % expected_cycles)
 
-    def test_eor_zeropagex(self):
+    def test_ora_zeropagex(self):
         expected_cycles = 4
         value = 0x0a
         expected_value = 0xfa
@@ -86,7 +86,7 @@ class TestEOR(unittest.TestCase):
         self.assertEqual(self.cpu.a, expected_value, "Register A should contain: %s" % hex(expected_value))
         self.assertEqual(self.cpu.cycles, expected_cycles, "CPU cycles should be %d" % expected_cycles)
 
-    def test_eor_indirectx(self):
+    def test_ora_indirectx(self):
         expected_cycles = 6
         value = 0xa0
         expected_value = 0xaa
@@ -101,7 +101,7 @@ class TestEOR(unittest.TestCase):
         self.assertEqual(self.cpu.a, expected_value, "Register A should contain: %s" % hex(expected_value))
         self.assertEqual(self.cpu.cycles, expected_cycles, "CPU cycles should be %d" % expected_cycles)
 
-    def test_eor_indirecty(self):
+    def test_ora_indirecty(self):
         expected_cycles = 5       
         value = 0xa0
         expected_value = 0xa0
