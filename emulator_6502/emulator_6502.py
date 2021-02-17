@@ -2,7 +2,7 @@ from instructions import lda, ldx, ldy, adc, _and, asl, lsr, rol, ror, eor, ora,
 
 PAGE_SIZE = 256
 MEM_SIZE = 65536
-START_ADDRESS = 0xfffc
+START_ADDRESS = 0x600
 
 LSB_7BITS_ENABLED_MASK = 0x7f 
 OVERFLOW_MASK = 0x80
@@ -171,7 +171,7 @@ class CPU(object):
         self.cycles = 0    
 
     def reset(self):
-        self.program_counter = 0xfffc
+        self.program_counter = START_ADDRESS
         self.stack_pointer = 0x0100
         self.cycles = 0
 

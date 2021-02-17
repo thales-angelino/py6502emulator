@@ -27,8 +27,8 @@ class TestLSR(unittest.TestCase):
         expected_value = 0x50
         expected_carry = 0
         self.memory.memory[emulator.START_ADDRESS] = lsr.LSR_ABSOLUTE_OPCODE
-        self.memory.memory[0xfffd] = 0xff # LSB FIRST!!!
-        self.memory.memory[0xfffe] = 0x02
+        self.memory.memory[emulator.START_ADDRESS + 1] = 0xff # LSB FIRST!!!
+        self.memory.memory[emulator.START_ADDRESS + 2] = 0x02
         self.memory.memory[address] = value
         self.cpu.execute(1)
         self.assertEqual(self.memory.memory[address], expected_value, "Memory M should contain: %s" % hex(expected_value))
@@ -42,8 +42,8 @@ class TestLSR(unittest.TestCase):
         expected_value = 0x50
         expected_carry = 0
         self.memory.memory[emulator.START_ADDRESS] = lsr.LSR_ABSOLUTEX_OPCODE
-        self.memory.memory[0xfffd] = 0xff # LSB FIRST!!!
-        self.memory.memory[0xfffe] = 0x02
+        self.memory.memory[emulator.START_ADDRESS + 1] = 0xff # LSB FIRST!!!
+        self.memory.memory[emulator.START_ADDRESS + 2] = 0x02
         self.memory.memory[address] = value
         self.cpu.x = 0x01
         self.cpu.execute(1)
@@ -58,7 +58,7 @@ class TestLSR(unittest.TestCase):
         expected_value = 0x50
         expected_carry = 1
         self.memory.memory[emulator.START_ADDRESS] = lsr.LSR_ZEROPAGE_OPCODE
-        self.memory.memory[0xfffd] = 0xff
+        self.memory.memory[emulator.START_ADDRESS + 1] = 0xff
         self.memory.memory[address] = value
         self.cpu.execute(1)
         self.assertEqual(self.memory.memory[address], expected_value, "Memory M should contain: %s" % hex(expected_value))
@@ -73,7 +73,7 @@ class TestLSR(unittest.TestCase):
         expected_carry = 1
         expected_zero = 1
         self.memory.memory[emulator.START_ADDRESS] = lsr.LSR_ZEROPAGEX_OPCODE
-        self.memory.memory[0xfffd] = 0x80
+        self.memory.memory[emulator.START_ADDRESS + 1] = 0x80
         self.memory.memory[address] = value
         self.cpu.x = 0x0f
         self.cpu.execute(1)

@@ -15,7 +15,7 @@ class TestAND(unittest.TestCase):
         self.cpu.a = 0xff
         expected_value = 0xaa
         self.memory.memory[emulator.START_ADDRESS] = _and.AND_IMMEDIATE_OPCODE
-        self.memory.memory[0xfffd] = value
+        self.memory.memory[emulator.START_ADDRESS + 1] = value
         self.cpu.execute(1)
         self.assertEqual(self.cpu.a, expected_value, "Register A should contain: %s" % hex(expected_value))
         self.assertEqual(self.cpu.cycles, expected_cycles, "CPU cycles should be %d" % expected_cycles)
@@ -26,8 +26,8 @@ class TestAND(unittest.TestCase):
         self.cpu.a = 0xff
         expected_value = 0xaa
         self.memory.memory[emulator.START_ADDRESS] = _and.AND_ABSOLUTE_OPCODE
-        self.memory.memory[0xfffd] = 0xff # LSB FIRST!!!
-        self.memory.memory[0xfffe] = 0x02
+        self.memory.memory[emulator.START_ADDRESS + 1] = 0xff # LSB FIRST!!!
+        self.memory.memory[emulator.START_ADDRESS + 2] = 0x02
         self.memory.memory[0x02ff] = value
         self.cpu.execute(1)
         self.assertEqual(self.cpu.a, expected_value, "Register A should contain: %s" % hex(expected_value))
@@ -39,8 +39,8 @@ class TestAND(unittest.TestCase):
         expected_value = 0xaa
         self.cpu.a = 0xff
         self.memory.memory[emulator.START_ADDRESS] = _and.AND_ABSOLUTEX_OPCODE
-        self.memory.memory[0xfffd] = 0xff # LSB FIRST!!!
-        self.memory.memory[0xfffe] = 0x02
+        self.memory.memory[emulator.START_ADDRESS + 1] = 0xff # LSB FIRST!!!
+        self.memory.memory[emulator.START_ADDRESS + 2] = 0x02
         self.memory.memory[0x0300] = value
         self.cpu.x = 0x01
         self.cpu.execute(1)
@@ -53,8 +53,8 @@ class TestAND(unittest.TestCase):
         expected_value = 0xaa
         self.cpu.a = 0xff
         self.memory.memory[emulator.START_ADDRESS] = _and.AND_ABSOLUTEY_OPCODE
-        self.memory.memory[0xfffd] = 0xff # LSB FIRST!!!
-        self.memory.memory[0xfffe] = 0x02
+        self.memory.memory[emulator.START_ADDRESS + 1] = 0xff # LSB FIRST!!!
+        self.memory.memory[emulator.START_ADDRESS + 2] = 0x02
         self.memory.memory[0x0301] = value
         self.cpu.y = 0x02
         self.cpu.execute(1)
@@ -67,7 +67,7 @@ class TestAND(unittest.TestCase):
         expected_value = 0xaa
         self.cpu.a = 0xff
         self.memory.memory[emulator.START_ADDRESS] = _and.AND_ZEROPAGE_OPCODE
-        self.memory.memory[0xfffd] = 0xff
+        self.memory.memory[emulator.START_ADDRESS + 1] = 0xff
         self.memory.memory[0x00ff] = value
         self.cpu.execute(1)
         self.assertEqual(self.cpu.a, expected_value, "Register A should contain: %s" % hex(expected_value))
@@ -79,7 +79,7 @@ class TestAND(unittest.TestCase):
         expected_value = 0xaa
         self.cpu.a = 0xff
         self.memory.memory[emulator.START_ADDRESS] = _and.AND_ZEROPAGEX_OPCODE
-        self.memory.memory[0xfffd] = 0x80
+        self.memory.memory[emulator.START_ADDRESS + 1] = 0x80
         self.memory.memory[0x008f] = value
         self.cpu.x = 0x0f
         self.cpu.execute(1)
@@ -92,7 +92,7 @@ class TestAND(unittest.TestCase):
         expected_value = 0x0a
         self.cpu.a = 0x0f
         self.memory.memory[emulator.START_ADDRESS] = _and.AND_INDIRECTX_OPCODE
-        self.memory.memory[0xfffd] = 0x80
+        self.memory.memory[emulator.START_ADDRESS + 1] = 0x80
         self.memory.memory[0x008f] = 0x74
         self.memory.memory[0x0090] = 0x20
         self.memory.memory[0x2074] = value
@@ -107,7 +107,7 @@ class TestAND(unittest.TestCase):
         expected_value = 0xa0
         self.cpu.a = 0xf0
         self.memory.memory[emulator.START_ADDRESS] = _and.AND_INDIRECTY_OPCODE
-        self.memory.memory[0xfffd] = 0x80
+        self.memory.memory[emulator.START_ADDRESS + 1] = 0x80
         self.memory.memory[0x0080] = 0x74
         self.memory.memory[0x0081] = 0x20
         self.memory.memory[0x2075] = value
