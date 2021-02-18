@@ -247,6 +247,8 @@ class CPU(object):
 
     def bcc(self, offset):
         if self.processor_status['carry'] is 0:
+            # Branch succeeded
+            self.cycles += 1
             self.branch(offset)
 
     def branch(self, offset):
@@ -257,6 +259,7 @@ class CPU(object):
             self.program_counter += offset
         page_changed = (self.program_counter >> 8) != (old_pc >> 8)
         if page_changed:
+            # Memory page changed
             self.cycles += 1
 
     def adc(self, value):

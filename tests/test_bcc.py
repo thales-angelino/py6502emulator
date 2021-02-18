@@ -10,7 +10,7 @@ class TestBCC(unittest.TestCase):
         self.cpu.reset()
 
     def test_bcc_scenario1(self):
-        expected_cycles = 2
+        expected_cycles = 3
         value = 0x03
         expected_pc = 0x605
         self.memory.memory[emulator.START_ADDRESS] = bcc.BCC_RELATIVE_OPCODE
@@ -20,7 +20,7 @@ class TestBCC(unittest.TestCase):
         self.assertEqual(self.cpu.cycles, expected_cycles, "CPU cycles should be %d" % expected_cycles)
 
     def test_bcc_scenario2(self):
-        expected_cycles = 3
+        expected_cycles = 4
         value = 0xfc
         expected_pc = 0x5ff
         self.memory.memory[emulator.START_ADDRESS] = bcc.BCC_RELATIVE_OPCODE
