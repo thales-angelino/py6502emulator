@@ -1,4 +1,4 @@
-from instructions import lda, ldx, ldy, adc, _and, asl, lsr, rol, ror, eor, ora, sbc, sta, stx, sty, bcc, bcs, beq, bmi, bne, bpl, bvc
+from instructions import lda, ldx, ldy, adc, _and, asl, lsr, rol, ror, eor, ora, sbc, sta, stx, sty, bcc, bcs, beq, bmi, bne, bpl, bvc, bvs
 
 PAGE_SIZE = 256
 MEM_SIZE = 65536
@@ -107,6 +107,7 @@ OPCODES_TABLE = {
     bne.BNE_RELATIVE_OPCODE: bne.BNERelative(),
     bpl.BPL_RELATIVE_OPCODE: bpl.BPLRelative(),
     bvc.BVC_RELATIVE_OPCODE: bvc.BVCRelative(),
+    bvs.BVS_RELATIVE_OPCODE: bvs.BVSRelative(),
 }
 
 class Memory(object):
@@ -288,6 +289,12 @@ class CPU(object):
 
     def bvc(self, offset):
         if self.processor_status['overflow'] is 0:
+            # Branch succeeded
+            self.cycles += 1
+            self.branch(offset)
+
+    def bvs(self, offset):
+        if self.processor_status['overflow'] is 1:
             # Branch succeeded
             self.cycles += 1
             self.branch(offset)
