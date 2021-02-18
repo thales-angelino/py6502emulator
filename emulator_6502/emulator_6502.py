@@ -1,4 +1,4 @@
-from instructions import lda, ldx, ldy, adc, _and, asl, lsr, rol, ror, eor, ora, sbc, sta, stx, sty, bcc, bcs, beq, bmi
+from instructions import lda, ldx, ldy, adc, _and, asl, lsr, rol, ror, eor, ora, sbc, sta, stx, sty, bcc, bcs, beq, bmi, bne
 
 PAGE_SIZE = 256
 MEM_SIZE = 65536
@@ -104,6 +104,7 @@ OPCODES_TABLE = {
     bcs.BCS_RELATIVE_OPCODE: bcs.BCSRelative(),
     beq.BEQ_RELATIVE_OPCODE: beq.BEQRelative(),
     bmi.BMI_RELATIVE_OPCODE: bmi.BMIRelative(),
+    bne.BNE_RELATIVE_OPCODE: bne.BNERelative(),
 }
 
 class Memory(object):
@@ -183,7 +184,6 @@ class CPU(object):
         while n_opcodes > 0:
             print "n opcodes: %d" % n_opcodes
             opcode = self.fetch_byte()
-            print (hex(self.program_counter))
             self.run_opcode(opcode)
             n_opcodes -= 1
 
@@ -268,6 +268,12 @@ class CPU(object):
 
     def bmi(self, offset):
         if self.processor_status['negative'] is 1:
+            # Branch succeeded
+            self.cycles += 1
+            self.branch(offset)
+
+    def bne(self, offset):
+        if self.processor_status['zero'] is 0:
             # Branch succeeded
             self.cycles += 1
             self.branch(offset)
