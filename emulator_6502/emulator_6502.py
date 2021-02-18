@@ -1,4 +1,4 @@
-from instructions import lda, ldx, ldy, adc, _and, asl, lsr, rol, ror, eor, ora, sbc, sta, stx, sty, bcc, bcs, beq, bmi, bne, bpl, bvc, bvs
+from instructions import lda, ldx, ldy, adc, _and, asl, lsr, rol, ror, eor, ora, sbc, sta, stx, sty, bcc, bcs, beq, bmi, bne, bpl, bvc, bvs, clc, cli, cld, clv
 
 PAGE_SIZE = 256
 MEM_SIZE = 65536
@@ -108,6 +108,10 @@ OPCODES_TABLE = {
     bpl.BPL_RELATIVE_OPCODE: bpl.BPLRelative(),
     bvc.BVC_RELATIVE_OPCODE: bvc.BVCRelative(),
     bvs.BVS_RELATIVE_OPCODE: bvs.BVSRelative(),
+    clc.CLC_IMPLIED_OPCODE: clc.CLCImplied(),
+    cld.CLD_IMPLIED_OPCODE: cld.CLDImplied(),
+    cli.CLI_IMPLIED_OPCODE: cli.CLIImplied(),
+    clv.CLV_IMPLIED_OPCODE: clv.CLVImplied(),
 }
 
 class Memory(object):
@@ -247,7 +251,9 @@ class CPU(object):
         self.y = value
         self.check_processor_flags_routine(self.y)
 
-    def sbc(self, value): 
+    def sbc(self, value):
+        # TODO implement decimal mode operation
+        assert self.processor_status['decimal_mode'] is 0
         value_1comp = value ^ 0xff
         self.adc(value_1comp)
 
@@ -299,6 +305,22 @@ class CPU(object):
             self.cycles += 1
             self.branch(offset)
 
+    def clc(self):
+        self.cycles += 1
+        self.processor_status['carry'] = 0
+
+    def cld(self):
+        self.cycles += 1
+        self.processor_status['decimal_mode'] = 0
+
+    def cli(self):
+        self.cycles += 1
+        self.processor_status['interrupt_disable'] = 0
+
+    def clv(self):
+        self.cycles += 1
+        self.processor_status['overflow'] = 0
+        
     def branch(self, offset):
         old_pc = self.program_counter
         if (offset & 0b10000000) > 0:
@@ -314,7 +336,7 @@ class CPU(object):
         """
         http://www.righto.com/2012/12/the-6502-overflow-flag-explained.html
 
-        It should also check the processor status decimal flag.
+        It should also check the processor status decimal_mode flag.
         """
         result = self.a + value + self.processor_status['carry']
         c6 = ((self.a & LSB_7BITS_ENABLED_MASK) +
