@@ -1,4 +1,4 @@
-from instructions import lda, ldx, ldy, adc, _and, asl, lsr, rol, ror, eor, ora, sbc, sta, stx, sty, bcc
+from instructions import lda, ldx, ldy, adc, _and, asl, lsr, rol, ror, eor, ora, sbc, sta, stx, sty, bcc, bcs, beq
 
 PAGE_SIZE = 256
 MEM_SIZE = 65536
@@ -101,6 +101,8 @@ OPCODES_TABLE = {
     sty.STY_ZEROPAGEX_OPCODE: sty.STYZeroPageX(),
     sty.STY_ABSOLUTE_OPCODE: sty.STYAbsolute(),
     bcc.BCC_RELATIVE_OPCODE: bcc.BCCRelative(),
+    bcs.BCS_RELATIVE_OPCODE: bcs.BCSRelative(),
+    beq.BEQ_RELATIVE_OPCODE: beq.BEQRelative(),
 }
 
 class Memory(object):
@@ -247,6 +249,18 @@ class CPU(object):
 
     def bcc(self, offset):
         if self.processor_status['carry'] is 0:
+            # Branch succeeded
+            self.cycles += 1
+            self.branch(offset)
+
+    def bcs(self, offset):
+        if self.processor_status['carry'] is 1:
+            # Branch succeeded
+            self.cycles += 1
+            self.branch(offset)
+
+    def beq(self, offset):
+        if self.processor_status['zero'] is 1:
             # Branch succeeded
             self.cycles += 1
             self.branch(offset)
