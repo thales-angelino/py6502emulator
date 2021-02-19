@@ -1,4 +1,4 @@
-from instructions import lda, ldx, ldy, adc, _and, asl, lsr, rol, ror, eor, ora, sbc, sta, stx, sty, bcc, bcs, beq, bmi, bne, bpl, bvc, bvs, clc, cli, cld, clv, _cmp
+from instructions import lda, ldx, ldy, adc, _and, asl, lsr, rol, ror, eor, ora, sbc, sta, stx, sty, bcc, bcs, beq, bmi, bne, bpl, bvc, bvs, clc, cli, cld, clv, _cmp, cpx
 
 PAGE_SIZE = 256
 MEM_SIZE = 65536
@@ -120,6 +120,9 @@ OPCODES_TABLE = {
     _cmp.CMP_ABSOLUTEY_OPCODE: _cmp.CMPAbsoluteY(),
     _cmp.CMP_INDIRECTX_OPCODE: _cmp.CMPIndirectX(),
     _cmp.CMP_INDIRECTY_OPCODE: _cmp.CMPIndirectY(),
+    cpx.CPX_IMMEDIATE_OPCODE: cpx.CPXImmediate(),
+    cpx.CPX_ZEROPAGE_OPCODE: cpx.CPXZeroPage(),
+    cpx.CPX_ABSOLUTE_OPCODE: cpx.CPXAbsolute(),
 }
 
 class Memory(object):
@@ -346,6 +349,16 @@ class CPU(object):
         if (self.a >= value):
             self.processor_status['carry'] = 1
         if (self.a == value):
+            self.processor_status['zero'] = 1
+        if (result & 0b10000000) > 0:
+            self.processor_status['negative'] = 1
+
+    def cpx(self, value):
+        result = self.x - value
+
+        if (self.x >= value):
+            self.processor_status['carry'] = 1
+        if (self.x == value):
             self.processor_status['zero'] = 1
         if (result & 0b10000000) > 0:
             self.processor_status['negative'] = 1
