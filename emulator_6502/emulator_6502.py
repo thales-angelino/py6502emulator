@@ -1,4 +1,4 @@
-from instructions import lda, ldx, ldy, adc, _and, asl, lsr, rol, ror, eor, ora, sbc, sta, stx, sty, bcc, bcs, beq, bmi, bne, bpl, bvc, bvs, clc, cli, cld, clv
+from instructions import lda, ldx, ldy, adc, _and, asl, lsr, rol, ror, eor, ora, sbc, sta, stx, sty, bcc, bcs, beq, bmi, bne, bpl, bvc, bvs, clc, cli, cld, clv, _cmp
 
 PAGE_SIZE = 256
 MEM_SIZE = 65536
@@ -112,6 +112,14 @@ OPCODES_TABLE = {
     cld.CLD_IMPLIED_OPCODE: cld.CLDImplied(),
     cli.CLI_IMPLIED_OPCODE: cli.CLIImplied(),
     clv.CLV_IMPLIED_OPCODE: clv.CLVImplied(),
+    _cmp.CMP_IMMEDIATE_OPCODE: _cmp.CMPImmediate(),
+    _cmp.CMP_ZEROPAGE_OPCODE: _cmp.CMPZeroPage(),
+    _cmp.CMP_ZEROPAGEX_OPCODE: _cmp.CMPZeroPageX(),
+    _cmp.CMP_ABSOLUTE_OPCODE: _cmp.CMPAbsolute(),
+    _cmp.CMP_ABSOLUTEX_OPCODE: _cmp.CMPAbsoluteX(),
+    _cmp.CMP_ABSOLUTEY_OPCODE: _cmp.CMPAbsoluteY(),
+    _cmp.CMP_INDIRECTX_OPCODE: _cmp.CMPIndirectX(),
+    _cmp.CMP_INDIRECTY_OPCODE: _cmp.CMPIndirectY(),
 }
 
 class Memory(object):
@@ -331,6 +339,16 @@ class CPU(object):
         if page_changed:
             # Memory page changed
             self.cycles += 1
+
+    def cmp(self, value):
+        result = self.a - value
+
+        if (self.a >= value):
+            self.processor_status['carry'] = 1
+        if (self.a == value):
+            self.processor_status['zero'] = 1
+        if (result & 0b10000000) > 0:
+            self.processor_status['negative'] = 1
 
     def adc(self, value):
         """
