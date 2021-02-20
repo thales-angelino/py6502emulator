@@ -31,6 +31,7 @@ from instructions import cpy
 from instructions import dey
 from instructions import dex
 from instructions import dec
+from instructions import inc
 
 
 PAGE_SIZE = 256
@@ -165,6 +166,10 @@ OPCODES_TABLE = {
     dec.DEC_ZEROPAGEX_OPCODE: dec.DECZeroPageX(),
     dec.DEC_ABSOLUTE_OPCODE: dec.DECAbsolute(),
     dec.DEC_ABSOLUTEX_OPCODE: dec.DECAbsoluteX(),
+    inc.INC_ZEROPAGE_OPCODE: inc.INCZeroPage(),
+    inc.INC_ZEROPAGEX_OPCODE: inc.INCZeroPageX(),
+    inc.INC_ABSOLUTE_OPCODE: inc.INCAbsolute(),
+    inc.INC_ABSOLUTEX_OPCODE: inc.INCAbsoluteX(),
 }
 
 class Memory(object):
@@ -414,6 +419,17 @@ class CPU(object):
             self.processor_status['zero'] = 1
         if (result & 0b10000000) > 0:
             self.processor_status['negative'] = 1
+
+    def increment(self, value):
+        self.cycles += 1
+        result = (value + 1) & 0xff
+        return result
+    
+    def inc(self, address):    
+        value = self.read_byte(address)
+        result = self.increment(value)
+        self.write_byte(address, result)
+        self.check_processor_flags_routine(result)
 
     def decrement(self, value):
         self.cycles += 1
