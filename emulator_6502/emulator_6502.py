@@ -30,6 +30,8 @@ from instructions import cpx
 from instructions import cpy
 from instructions import dey
 from instructions import dex
+from instructions import dec
+
 
 PAGE_SIZE = 256
 MEM_SIZE = 65536
@@ -159,6 +161,10 @@ OPCODES_TABLE = {
     cpy.CPY_ABSOLUTE_OPCODE: cpy.CPYAbsolute(),
     dex.DEX_IMPLIED_OPCODE: dex.DEXImplied(),
     dey.DEY_IMPLIED_OPCODE: dey.DEYImplied(),
+    dec.DEC_ZEROPAGE_OPCODE: dec.DECZeroPage(),
+    dec.DEC_ZEROPAGEX_OPCODE: dec.DECZeroPageX(),
+    dec.DEC_ABSOLUTE_OPCODE: dec.DECAbsolute(),
+    dec.DEC_ABSOLUTEX_OPCODE: dec.DECAbsoluteX(),
 }
 
 class Memory(object):
@@ -417,6 +423,12 @@ class CPU(object):
         else:
             result -= 1
         return result
+
+    def dec(self, address):    
+        value = self.read_byte(address)
+        result = self.decrement(value)
+        self.write_byte(address, result)
+        self.check_processor_flags_routine(result)
 
     def dey(self):
         self.y = self.decrement(self.y)
