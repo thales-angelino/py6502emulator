@@ -1,4 +1,35 @@
-from instructions import lda, ldx, ldy, adc, _and, asl, lsr, rol, ror, eor, ora, sbc, sta, stx, sty, bcc, bcs, beq, bmi, bne, bpl, bvc, bvs, clc, cli, cld, clv, _cmp, cpx
+from instructions import lda
+from instructions import ldx
+from instructions import ldy
+from instructions import adc
+from instructions import _and
+from instructions import asl
+from instructions import lsr
+from instructions import rol
+from instructions import ror
+from instructions import eor
+from instructions import ora
+from instructions import sbc
+from instructions import sta
+from instructions import stx
+from instructions import sty
+from instructions import bcc
+from instructions import bcs
+from instructions import beq
+from instructions import bmi
+from instructions import bne
+from instructions import bpl
+from instructions import bvc
+from instructions import bvs
+from instructions import clc
+from instructions import cli
+from instructions import cld
+from instructions import clv
+from instructions import _cmp
+from instructions import cpx
+from instructions import cpy
+from instructions import dey
+from instructions import dex
 
 PAGE_SIZE = 256
 MEM_SIZE = 65536
@@ -123,6 +154,11 @@ OPCODES_TABLE = {
     cpx.CPX_IMMEDIATE_OPCODE: cpx.CPXImmediate(),
     cpx.CPX_ZEROPAGE_OPCODE: cpx.CPXZeroPage(),
     cpx.CPX_ABSOLUTE_OPCODE: cpx.CPXAbsolute(),
+    cpy.CPY_IMMEDIATE_OPCODE: cpy.CPYImmediate(),
+    cpy.CPY_ZEROPAGE_OPCODE: cpy.CPYZeroPage(),
+    cpy.CPY_ABSOLUTE_OPCODE: cpy.CPYAbsolute(),
+    dex.DEX_IMPLIED_OPCODE: dex.DEXImplied(),
+    dey.DEY_IMPLIED_OPCODE: dey.DEYImplied(),
 }
 
 class Memory(object):
@@ -362,6 +398,33 @@ class CPU(object):
             self.processor_status['zero'] = 1
         if (result & 0b10000000) > 0:
             self.processor_status['negative'] = 1
+
+    def cpy(self, value):
+        result = self.y - value
+
+        if (self.y >= value):
+            self.processor_status['carry'] = 1
+        if (self.y == value):
+            self.processor_status['zero'] = 1
+        if (result & 0b10000000) > 0:
+            self.processor_status['negative'] = 1
+
+    def decrement(self, value):
+        self.cycles += 1
+        result = value
+        if value == 0x00:
+            result = 0xff
+        else:
+            result -= 1
+        return result
+
+    def dey(self):
+        self.y = self.decrement(self.y)
+        self.check_processor_flags_routine(self.y)
+
+    def dex(self):
+        self.x = self.decrement(self.x)
+        self.check_processor_flags_routine(self.x)
 
     def adc(self, value):
         """

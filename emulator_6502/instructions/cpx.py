@@ -10,7 +10,7 @@ class CPXImmediate(object):
     def run(self, cpu):
         byte_r = cpu.immediate()
         print("CPX memory byte read: %s" % hex(byte_r))
-        print("CPX register A read: %s" % hex(cpu.a))
+        print("CPX register X read: %s" % hex(cpu.x))
         print("CPX processor status Carry read: %s" % hex(cpu.processor_status['carry']))
         cpu.cpx(byte_r)
 
@@ -23,7 +23,7 @@ class CPXZeroPage(object):
     def run(self, cpu):
         byte_r = cpu.zero_page()
         print("CPX zero page byte read: %s" % hex(byte_r))
-        print("CPX register A read: %s" % hex(cpu.a))
+        print("CPX register X read: %s" % hex(cpu.x))
         print("CPX processor status Carry read: %s" % hex(cpu.processor_status['carry']))
         cpu.cpx(byte_r)
 
@@ -36,6 +36,6 @@ class CPXAbsolute(object):
     def run(self, cpu):
         byte_r = cpu.absolute()
         print("CPX absolute byte read: %s" % hex(byte_r))
-        print("CPX register A read: %s" % hex(cpu.a))
+        print("CPX register X read: %s" % hex(cpu.x))
         print("CPX processor status carry read: %s" % hex(cpu.processor_status['carry']))
         cpu.cpx(byte_r)
