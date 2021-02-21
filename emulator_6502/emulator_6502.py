@@ -32,6 +32,7 @@ from instructions import dey
 from instructions import dex
 from instructions import dec
 from instructions import inc
+from instructions import jmp
 
 
 PAGE_SIZE = 256
@@ -170,6 +171,8 @@ OPCODES_TABLE = {
     inc.INC_ZEROPAGEX_OPCODE: inc.INCZeroPageX(),
     inc.INC_ABSOLUTE_OPCODE: inc.INCAbsolute(),
     inc.INC_ABSOLUTEX_OPCODE: inc.INCAbsoluteX(),
+    jmp.JMP_ABSOLUTE_OPCODE: jmp.JMPAbsolute(),
+    jmp.JMP_INDIRECT_OPCODE: jmp.JMPIndirect(),
 }
 
 class Memory(object):
@@ -595,6 +598,9 @@ class CPU(object):
             self.write_byte(address, result)
             self.check_processor_flags_routine(result)
 
+    def jmp(self, address):
+        self.program_counter = address
+
     # Memory access methods
 
     def immediate(self):
@@ -648,6 +654,13 @@ class CPU(object):
             self.cycles += 1
         print("Reading Absolute Y Address: %s" % hex(address))
         value = self.read_byte(address)
+        return value
+
+    def indirect(self):
+        address = self.fetch_word()
+        print("Reading Indirect Address: %s" % hex(address))
+        value = self.read_word(address)
+        print("Value: %s" % hex(value))
         return value
 
     def indirect_x(self):
