@@ -33,7 +33,9 @@ from instructions import dex
 from instructions import dec
 from instructions import inc
 from instructions import jmp
-
+from instructions import sec
+from instructions import sed
+from instructions import sei
 
 PAGE_SIZE = 256
 MEM_SIZE = 65536
@@ -173,6 +175,9 @@ OPCODES_TABLE = {
     inc.INC_ABSOLUTEX_OPCODE: inc.INCAbsoluteX(),
     jmp.JMP_ABSOLUTE_OPCODE: jmp.JMPAbsolute(),
     jmp.JMP_INDIRECT_OPCODE: jmp.JMPIndirect(),
+    sec.SEC_IMPLIED_OPCODE: sec.SECImplied(),
+    sed.SED_IMPLIED_OPCODE: sed.SEDImplied(),
+    sei.SEI_IMPLIED_OPCODE: sei.SEIImplied(),
 }
 
 class Memory(object):
@@ -365,6 +370,18 @@ class CPU(object):
             # Branch succeeded
             self.cycles += 1
             self.branch(offset)
+
+    def sec(self):
+        self.cycles += 1
+        self.processor_status['carry'] = 1
+
+    def sed(self):
+        self.cycles += 1
+        self.processor_status['decimal_mode'] = 1
+
+    def sei(self):
+        self.cycles += 1
+        self.processor_status['interrupt_disable'] = 1
 
     def clc(self):
         self.cycles += 1
