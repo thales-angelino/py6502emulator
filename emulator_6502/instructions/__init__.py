@@ -40,6 +40,8 @@ import pha
 import pla
 import tax
 import txa
+import tay
+import tya
 
 OPCODES_TABLE = {
     lda.LDA_IMMEDIATE_OPCODE: lda.LDAImmediate(),
@@ -178,4 +180,6 @@ OPCODES_TABLE = {
     pla.PLA_IMPLIED_OPCODE: pla.PLAImplied(),
     tax.TAX_IMPLIED_OPCODE: tax.TAXImplied(),
     txa.TXA_IMPLIED_OPCODE: txa.TXAImplied(),
+    tay.TAY_IMPLIED_OPCODE: tay.TAYImplied(),
+    tya.TYA_IMPLIED_OPCODE: tya.TYAImplied(),
 }
