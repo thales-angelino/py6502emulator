@@ -38,6 +38,8 @@ from instructions import sed
 from instructions import sei
 from instructions import pha
 from instructions import pla
+from instructions import tax
+
 
 PAGE_SIZE = 256
 MEM_SIZE = 65536
@@ -182,6 +184,7 @@ OPCODES_TABLE = {
     sei.SEI_IMPLIED_OPCODE: sei.SEIImplied(),
     pha.PHA_IMPLIED_OPCODE: pha.PHAImplied(),
     pla.PLA_IMPLIED_OPCODE: pla.PLAImplied(),
+    tax.TAX_IMPLIED_OPCODE: tax.TAXImplied(),
 }
 
 class Memory(object):
@@ -208,38 +211,11 @@ class CPU(object):
     def __init__(self, memory):
         super(CPU, self).__init__()
         self.memory = memory
-        """
-        The program counter is a 16 bit register which points to the next
-        instruction to be executed.
-        The value of program counter is modified automatically as instructions
-        are executed.
-
-        The value of the program counter can be modified by executing a jump, 
-        a relative branch or a subroutine call to another memory address or by
-        returning from a subroutine or interrupt.
-        """
         self.program_counter = START_ADDRESS
-        """
-        The processor supports a 256 byte stack located between $0100 and $01FF. 
-        The stack pointer is an 8 bit register and holds the low 8 bits of the
-        next free location on the stack.
-        The location of the stack is fixed and cannot be moved.
-
-        Pushing bytes to the stack causes the stack pointer to be decremented.
-        Conversely pulling bytes causes it to be incremented.
-
-        The CPU does not detect if the stack is overflowed by excessive pushing or 
-        pulling operations and will most likely result in the program crashing.
-        """
         self.stack_pointer = 0xff
-
-        """
-        Registers A, X and Y
-        """
         self.a = 0
         self.x = 0
         self.y = 0
-
         self.processor_status = {
             'carry': 0,
             'zero': 0,
@@ -249,7 +225,6 @@ class CPU(object):
             'overflow': 0,
             'negative': 0
         }
-
         self.cycles = 0    
 
     def reset(self):
@@ -643,6 +618,35 @@ class CPU(object):
         self.a = self.pop_byte_stack()
         self.cycles += 1
         self.check_processor_flags_routine(self.a)
+
+    def tax(self):
+        self.x = self.a
+        self.cycles += 1
+        self.check_processor_flags_routine(self.x)
+
+    def tay(self):
+        self.y = self.a
+        self.cycles += 1
+        self.check_processor_flags_routine(self.y)
+
+    def txa(self):
+        self.a = self.x
+        self.cycles += 1
+        self.check_processor_flags_routine(self.a)
+
+    def tya(self):
+        self.a = self.y
+        self.cycles += 1
+        self.check_processor_flags_routine(self.a)
+
+    def txs(self):
+        self.x = self.stack_pointer
+        self.cycles += 1
+        self.check_processor_flags_routine(self.x)
+
+    def txs(self):
+        self.stack_pointer = self.x
+        self.cycles += 1
 
     # Memory access methods
 
