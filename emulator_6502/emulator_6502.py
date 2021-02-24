@@ -39,6 +39,7 @@ from instructions import sei
 from instructions import pha
 from instructions import pla
 from instructions import tax
+from instructions import txa
 
 
 PAGE_SIZE = 256
@@ -185,6 +186,7 @@ OPCODES_TABLE = {
     pha.PHA_IMPLIED_OPCODE: pha.PHAImplied(),
     pla.PLA_IMPLIED_OPCODE: pla.PLAImplied(),
     tax.TAX_IMPLIED_OPCODE: tax.TAXImplied(),
+    txa.TXA_IMPLIED_OPCODE: txa.TXAImplied(),
 }
 
 class Memory(object):
