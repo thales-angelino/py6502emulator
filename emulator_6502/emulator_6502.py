@@ -36,6 +36,8 @@ from instructions import jmp
 from instructions import sec
 from instructions import sed
 from instructions import sei
+from instructions import pha
+from instructions import pla
 
 PAGE_SIZE = 256
 MEM_SIZE = 65536
@@ -178,6 +180,8 @@ OPCODES_TABLE = {
     sec.SEC_IMPLIED_OPCODE: sec.SECImplied(),
     sed.SED_IMPLIED_OPCODE: sed.SEDImplied(),
     sei.SEI_IMPLIED_OPCODE: sei.SEIImplied(),
+    pha.PHA_IMPLIED_OPCODE: pha.PHAImplied(),
+    pla.PLA_IMPLIED_OPCODE: pla.PLAImplied(),
 }
 
 class Memory(object):
@@ -227,7 +231,7 @@ class CPU(object):
         The CPU does not detect if the stack is overflowed by excessive pushing or 
         pulling operations and will most likely result in the program crashing.
         """
-        self.stack_pointer = 0x00
+        self.stack_pointer = 0xff
 
         """
         Registers A, X and Y
@@ -250,7 +254,7 @@ class CPU(object):
 
     def reset(self):
         self.program_counter = START_ADDRESS
-        self.stack_pointer = 0x0100
+        self.stack_pointer = 0xff
         self.cycles = 0
 
     def execute(self, n_opcodes):
@@ -617,6 +621,28 @@ class CPU(object):
 
     def jmp(self, address):
         self.program_counter = address
+
+    def push_byte_stack(self, value):
+        self.cycles += 2
+        stack_address = 0x100 + self.stack_pointer
+        self.memory.memory[stack_address] = value
+        self.stack_pointer -= 1
+
+    def pop_byte_stack(self):
+        self.cycles += 2
+        self.stack_pointer += 1
+        stack_address = 0x100 + self.stack_pointer
+        value = self.memory.memory[stack_address]
+        self.memory.memory[stack_address] = 0x00
+        return value
+
+    def pha(self):
+        self.push_byte_stack(self.a)
+
+    def pla(self):
+        self.a = self.pop_byte_stack()
+        self.cycles += 1
+        self.check_processor_flags_routine(self.a)
 
     # Memory access methods
 
