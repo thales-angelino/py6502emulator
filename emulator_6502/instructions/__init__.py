@@ -1,0 +1,181 @@
+import lda
+import ldx
+import ldy
+import adc
+import _and
+import asl
+import lsr
+import rol
+import ror
+import eor
+import ora
+import sbc
+import sta
+import stx
+import sty
+import bcc
+import bcs
+import beq
+import bmi
+import bne
+import bpl
+import bvc
+import bvs
+import clc
+import cli
+import cld
+import clv
+import _cmp
+import cpx
+import cpy
+import dey
+import dex
+import dec
+import inc
+import jmp
+import sec
+import sed
+import sei
+import pha
+import pla
+import tax
+import txa
+
+OPCODES_TABLE = {
+    lda.LDA_IMMEDIATE_OPCODE: lda.LDAImmediate(),
+    lda.LDA_ZEROPAGE_OPCODE: lda.LDAZeroPage(),
+    lda.LDA_ZEROPAGEX_OPCODE: lda.LDAZeroPageX(),
+    lda.LDA_ABSOLUTE_OPCODE: lda.LDAAbsolute(),
+    lda.LDA_ABSOLUTEX_OPCODE: lda.LDAAbsoluteX(),
+    lda.LDA_ABSOLUTEY_OPCODE: lda.LDAAbsoluteY(),
+    lda.LDA_INDIRECTX_OPCODE: lda.LDAIndirectX(),
+    lda.LDA_INDIRECTY_OPCODE: lda.LDAIndirectY(),
+    ldx.LDX_IMMEDIATE_OPCODE: ldx.LDXImmediate(),
+    ldx.LDX_ZEROPAGE_OPCODE: ldx.LDXZeroPage(),
+    ldx.LDX_ZEROPAGEY_OPCODE: ldx.LDXZeroPageY(),
+    ldx.LDX_ABSOLUTE_OPCODE: ldx.LDXAbsolute(),
+    ldx.LDX_ABSOLUTEY_OPCODE: ldx.LDXAbsoluteY(),
+    ldy.LDY_IMMEDIATE_OPCODE: ldy.LDYImmediate(),
+    ldy.LDY_ZEROPAGE_OPCODE: ldy.LDYZeroPage(),
+    ldy.LDY_ZEROPAGEX_OPCODE: ldy.LDYZeroPageX(),
+    ldy.LDY_ABSOLUTE_OPCODE: ldy.LDYAbsolute(),
+    ldy.LDY_ABSOLUTEX_OPCODE: ldy.LDYAbsoluteX(),
+    adc.ADC_IMMEDIATE_OPCODE: adc.ADCImmediate(),
+    adc.ADC_ZEROPAGE_OPCODE: adc.ADCZeroPage(),
+    adc.ADC_ZEROPAGEX_OPCODE: adc.ADCZeroPageX(),
+    adc.ADC_ABSOLUTE_OPCODE: adc.ADCAbsolute(),
+    adc.ADC_ABSOLUTEX_OPCODE: adc.ADCAbsoluteX(),
+    adc.ADC_ABSOLUTEY_OPCODE: adc.ADCAbsoluteY(),
+    adc.ADC_INDIRECTX_OPCODE: adc.ADCIndirectX(),
+    adc.ADC_INDIRECTY_OPCODE: adc.ADCIndirectY(),
+    _and.AND_IMMEDIATE_OPCODE: _and.ANDImmediate(),
+    _and.AND_ZEROPAGE_OPCODE: _and.ANDZeroPage(),
+    _and.AND_ZEROPAGEX_OPCODE: _and.ANDZeroPageX(),
+    _and.AND_ABSOLUTE_OPCODE: _and.ANDAbsolute(),
+    _and.AND_ABSOLUTEX_OPCODE: _and.ANDAbsoluteX(),
+    _and.AND_ABSOLUTEY_OPCODE: _and.ANDAbsoluteY(),
+    _and.AND_INDIRECTX_OPCODE: _and.ANDIndirectX(),
+    _and.AND_INDIRECTY_OPCODE: _and.ANDIndirectY(),
+    asl.ASL_ACCUMULATOR_OPCODE: asl.ASLAccumulator(),
+    asl.ASL_ZEROPAGE_OPCODE: asl.ASLZeroPage(),
+    asl.ASL_ZEROPAGEX_OPCODE: asl.ASLZeroPageX(),
+    asl.ASL_ABSOLUTE_OPCODE: asl.ASLAbsolute(),
+    asl.ASL_ABSOLUTEX_OPCODE: asl.ASLAbsoluteX(),
+    lsr.LSR_ACCUMULATOR_OPCODE: lsr.LSRAccumulator(),
+    lsr.LSR_ZEROPAGE_OPCODE: lsr.LSRZeroPage(),
+    lsr.LSR_ZEROPAGEX_OPCODE: lsr.LSRZeroPageX(),
+    lsr.LSR_ABSOLUTE_OPCODE: lsr.LSRAbsolute(),
+    lsr.LSR_ABSOLUTEX_OPCODE: lsr.LSRAbsoluteX(),
+    rol.ROL_ACCUMULATOR_OPCODE: rol.ROLAccumulator(),
+    rol.ROL_ZEROPAGE_OPCODE: rol.ROLZeroPage(),
+    rol.ROL_ZEROPAGEX_OPCODE: rol.ROLZeroPageX(),
+    rol.ROL_ABSOLUTE_OPCODE: rol.ROLAbsolute(),
+    rol.ROL_ABSOLUTEX_OPCODE: rol.ROLAbsoluteX(),
+    ror.ROR_ACCUMULATOR_OPCODE: ror.RORAccumulator(),
+    ror.ROR_ZEROPAGE_OPCODE: ror.RORZeroPage(),
+    ror.ROR_ZEROPAGEX_OPCODE: ror.RORZeroPageX(),
+    ror.ROR_ABSOLUTE_OPCODE: ror.RORAbsolute(),
+    ror.ROR_ABSOLUTEX_OPCODE: ror.RORAbsoluteX(),
+    eor.EOR_IMMEDIATE_OPCODE: eor.EORImmediate(),
+    eor.EOR_ZEROPAGE_OPCODE: eor.EORZeroPage(),
+    eor.EOR_ZEROPAGEX_OPCODE: eor.EORZeroPageX(),
+    eor.EOR_ABSOLUTE_OPCODE: eor.EORAbsolute(),
+    eor.EOR_ABSOLUTEX_OPCODE: eor.EORAbsoluteX(),
+    eor.EOR_ABSOLUTEY_OPCODE: eor.EORAbsoluteY(),
+    eor.EOR_INDIRECTX_OPCODE: eor.EORIndirectX(),
+    eor.EOR_INDIRECTY_OPCODE: eor.EORIndirectY(),
+    ora.ORA_IMMEDIATE_OPCODE: ora.ORAImmediate(),
+    ora.ORA_ZEROPAGE_OPCODE: ora.ORAZeroPage(),
+    ora.ORA_ZEROPAGEX_OPCODE: ora.ORAZeroPageX(),
+    ora.ORA_ABSOLUTE_OPCODE: ora.ORAAbsolute(),
+    ora.ORA_ABSOLUTEX_OPCODE: ora.ORAAbsoluteX(),
+    ora.ORA_ABSOLUTEY_OPCODE: ora.ORAAbsoluteY(),
+    ora.ORA_INDIRECTX_OPCODE: ora.ORAIndirectX(),
+    ora.ORA_INDIRECTY_OPCODE: ora.ORAIndirectY(),
+    sbc.SBC_IMMEDIATE_OPCODE: sbc.SBCImmediate(),
+    sbc.SBC_ZEROPAGE_OPCODE: sbc.SBCZeroPage(),
+    sbc.SBC_ZEROPAGEX_OPCODE: sbc.SBCZeroPageX(),
+    sbc.SBC_ABSOLUTE_OPCODE: sbc.SBCAbsolute(),
+    sbc.SBC_ABSOLUTEX_OPCODE: sbc.SBCAbsoluteX(),
+    sbc.SBC_ABSOLUTEY_OPCODE: sbc.SBCAbsoluteY(),
+    sbc.SBC_INDIRECTX_OPCODE: sbc.SBCIndirectX(),
+    sbc.SBC_INDIRECTY_OPCODE: sbc.SBCIndirectY(),
+    sta.STA_ZEROPAGE_OPCODE: sta.STAZeroPage(),
+    sta.STA_ZEROPAGEX_OPCODE: sta.STAZeroPageX(),
+    sta.STA_ABSOLUTE_OPCODE: sta.STAAbsolute(),
+    sta.STA_ABSOLUTEX_OPCODE: sta.STAAbsoluteX(),
+    sta.STA_ABSOLUTEY_OPCODE: sta.STAAbsoluteY(),
+    sta.STA_INDIRECTX_OPCODE: sta.STAIndirectX(),
+    sta.STA_INDIRECTY_OPCODE: sta.STAIndirectY(),
+    stx.STX_ZEROPAGE_OPCODE: stx.STXZeroPage(),
+    stx.STX_ZEROPAGEY_OPCODE: stx.STXZeroPageY(),
+    stx.STX_ABSOLUTE_OPCODE: stx.STXAbsolute(),
+    sty.STY_ZEROPAGE_OPCODE: sty.STYZeroPage(),
+    sty.STY_ZEROPAGEX_OPCODE: sty.STYZeroPageX(),
+    sty.STY_ABSOLUTE_OPCODE: sty.STYAbsolute(),
+    bcc.BCC_RELATIVE_OPCODE: bcc.BCCRelative(),
+    bcs.BCS_RELATIVE_OPCODE: bcs.BCSRelative(),
+    beq.BEQ_RELATIVE_OPCODE: beq.BEQRelative(),
+    bmi.BMI_RELATIVE_OPCODE: bmi.BMIRelative(),
+    bne.BNE_RELATIVE_OPCODE: bne.BNERelative(),
+    bpl.BPL_RELATIVE_OPCODE: bpl.BPLRelative(),
+    bvc.BVC_RELATIVE_OPCODE: bvc.BVCRelative(),
+    bvs.BVS_RELATIVE_OPCODE: bvs.BVSRelative(),
+    clc.CLC_IMPLIED_OPCODE: clc.CLCImplied(),
+    cld.CLD_IMPLIED_OPCODE: cld.CLDImplied(),
+    cli.CLI_IMPLIED_OPCODE: cli.CLIImplied(),
+    clv.CLV_IMPLIED_OPCODE: clv.CLVImplied(),
+    _cmp.CMP_IMMEDIATE_OPCODE: _cmp.CMPImmediate(),
+    _cmp.CMP_ZEROPAGE_OPCODE: _cmp.CMPZeroPage(),
+    _cmp.CMP_ZEROPAGEX_OPCODE: _cmp.CMPZeroPageX(),
+    _cmp.CMP_ABSOLUTE_OPCODE: _cmp.CMPAbsolute(),
+    _cmp.CMP_ABSOLUTEX_OPCODE: _cmp.CMPAbsoluteX(),
+    _cmp.CMP_ABSOLUTEY_OPCODE: _cmp.CMPAbsoluteY(),
+    _cmp.CMP_INDIRECTX_OPCODE: _cmp.CMPIndirectX(),
+    _cmp.CMP_INDIRECTY_OPCODE: _cmp.CMPIndirectY(),
+    cpx.CPX_IMMEDIATE_OPCODE: cpx.CPXImmediate(),
+    cpx.CPX_ZEROPAGE_OPCODE: cpx.CPXZeroPage(),
+    cpx.CPX_ABSOLUTE_OPCODE: cpx.CPXAbsolute(),
+    cpy.CPY_IMMEDIATE_OPCODE: cpy.CPYImmediate(),
+    cpy.CPY_ZEROPAGE_OPCODE: cpy.CPYZeroPage(),
+    cpy.CPY_ABSOLUTE_OPCODE: cpy.CPYAbsolute(),
+    dex.DEX_IMPLIED_OPCODE: dex.DEXImplied(),
+    dey.DEY_IMPLIED_OPCODE: dey.DEYImplied(),
+    dec.DEC_ZEROPAGE_OPCODE: dec.DECZeroPage(),
+    dec.DEC_ZEROPAGEX_OPCODE: dec.DECZeroPageX(),
+    dec.DEC_ABSOLUTE_OPCODE: dec.DECAbsolute(),
+    dec.DEC_ABSOLUTEX_OPCODE: dec.DECAbsoluteX(),
+    inc.INC_ZEROPAGE_OPCODE: inc.INCZeroPage(),
+    inc.INC_ZEROPAGEX_OPCODE: inc.INCZeroPageX(),
+    inc.INC_ABSOLUTE_OPCODE: inc.INCAbsolute(),
+    inc.INC_ABSOLUTEX_OPCODE: inc.INCAbsoluteX(),
+    jmp.JMP_ABSOLUTE_OPCODE: jmp.JMPAbsolute(),
+    jmp.JMP_INDIRECT_OPCODE: jmp.JMPIndirect(),
+    sec.SEC_IMPLIED_OPCODE: sec.SECImplied(),
+    sed.SED_IMPLIED_OPCODE: sed.SEDImplied(),
+    sei.SEI_IMPLIED_OPCODE: sei.SEIImplied(),
+    pha.PHA_IMPLIED_OPCODE: pha.PHAImplied(),
+    pla.PLA_IMPLIED_OPCODE: pla.PLAImplied(),
+    tax.TAX_IMPLIED_OPCODE: tax.TAXImplied(),
+    txa.TXA_IMPLIED_OPCODE: txa.TXAImplied(),
+}
