@@ -459,13 +459,16 @@ class CPU(object):
         self.cycles += 1
         self.check_processor_flags_routine(self.a)
 
-    def txs(self):
+    def tsx(self):
         self.x = self.stack_pointer
         self.cycles += 1
         self.check_processor_flags_routine(self.x)
 
     def txs(self):
         self.stack_pointer = self.x
+        self.cycles += 1
+
+    def nop(self):
         self.cycles += 1
 
     # Memory access methods

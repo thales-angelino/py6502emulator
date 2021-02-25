@@ -42,6 +42,9 @@ import tax
 import txa
 import tay
 import tya
+import tsx
+import txs
+import nop
 
 OPCODES_TABLE = {
     lda.LDA_IMMEDIATE_OPCODE: lda.LDAImmediate(),
@@ -182,4 +185,7 @@ OPCODES_TABLE = {
     txa.TXA_IMPLIED_OPCODE: txa.TXAImplied(),
     tay.TAY_IMPLIED_OPCODE: tay.TAYImplied(),
     tya.TYA_IMPLIED_OPCODE: tya.TYAImplied(),
+    txs.TXS_IMPLIED_OPCODE: txs.TXSImplied(),
+    tsx.TSX_IMPLIED_OPCODE: tsx.TSXImplied(),
+    nop.NOP_IMPLIED_OPCODE: nop.NOPImplied(),
 }
