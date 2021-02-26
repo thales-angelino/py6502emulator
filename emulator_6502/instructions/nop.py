@@ -1,4 +1,4 @@
-NOP_IMPLIED_OPCODE = 0x00
+NOP_IMPLIED_OPCODE = 0xea
 
 
 class NOPImplied(object):

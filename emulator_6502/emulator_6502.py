@@ -439,6 +439,71 @@ class CPU(object):
         self.cycles += 1
         self.check_processor_flags_routine(self.a)
 
+    def php(self):
+        value = 0x00
+        if self.processor_status['carry'] > 0:
+            value += 0b00000001
+
+        if self.processor_status['zero'] > 0:
+            value += 0b00000010
+
+        if self.processor_status['interrupt_disable'] > 0:
+            value += 0b00000100
+
+        if self.processor_status['decimal_mode'] > 0:
+            value += 0b00001000
+
+        if self.processor_status['break_command'] > 0:
+            value += 0b00010000
+
+        if self.processor_status['overflow'] > 0:
+            value += 0b01000000
+
+        if self.processor_status['negative'] > 0:
+            value += 0b10000000
+
+        self.push_byte_stack(value)
+
+    def plp(self):
+        value = self.pop_byte_stack()
+
+        if (value & 0b00000001) > 0:
+            self.processor_status['carry'] = 1
+        else:
+            self.processor_status['carry'] = 0
+
+        if (value & 0b00000010) > 0:
+            self.processor_status['zero'] = 1
+        else:
+            self.processor_status['zero'] = 0
+
+        if (value & 0b00000100) > 0:
+            self.processor_status['interrupt_disable'] = 1
+        else:
+            self.processor_status['interrupt_disable'] = 0
+
+        if (value & 0b00001000) > 0:
+            self.processor_status['decimal_mode'] = 1
+        else:
+            self.processor_status['decimal_mode'] = 0
+
+        if (value & 0b00010000) > 0:
+            self.processor_status['break_command'] = 1
+        else:
+            self.processor_status['break_command'] = 0
+
+        if (value & 0b01000000) > 0:
+            self.processor_status['overflow'] = 1
+        else:
+            self.processor_status['overflow'] = 0
+
+        if (value & 0b10000000) > 0:
+            self.processor_status['negative'] = 1
+        else:
+            self.processor_status['negative'] = 0
+
+        self.cycles += 1
+
     def tax(self):
         self.x = self.a
         self.cycles += 1
