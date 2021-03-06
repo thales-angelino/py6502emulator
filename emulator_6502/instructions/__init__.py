@@ -47,6 +47,8 @@ import txs
 import nop
 import plp
 import php
+import jsr
+import rts
 
 OPCODES_TABLE = {
     lda.LDA_IMMEDIATE_OPCODE: lda.LDAImmediate(),
@@ -192,4 +194,6 @@ OPCODES_TABLE = {
     nop.NOP_IMPLIED_OPCODE: nop.NOPImplied(),
     plp.PLP_IMPLIED_OPCODE: plp.PLPImplied(),
     php.PHP_IMPLIED_OPCODE: php.PHPImplied(),
+    jsr.JSR_ABSOLUTE_OPCODE: jsr.JSRAbsolute(),
+    rts.RTS_IMPLIED_OPCODE: rts.RTSImplied(),
 }

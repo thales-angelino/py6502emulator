@@ -431,6 +431,41 @@ class CPU(object):
         self.memory.memory[stack_address] = 0x00
         return value
 
+    def push_word_stack(self, word):
+        self.cycles += 3
+        msb = (word >> 8) & 0xff
+        lsb = word & 0xff
+        stack_address = 0x100 + self.stack_pointer
+        self.memory.memory[stack_address] = msb
+        self.stack_pointer -= 1
+        stack_address = 0x100 + self.stack_pointer
+        self.memory.memory[stack_address] = lsb
+        self.stack_pointer -= 1
+
+    def pop_word_stack(self):
+        self.cycles += 4
+        self.stack_pointer += 1
+        stack_address = 0x100 + self.stack_pointer
+        lsb = self.memory.memory[stack_address]
+        self.memory.memory[stack_address] = 0x00
+        self.stack_pointer += 1
+        stack_address = 0x100 + self.stack_pointer
+        msb = self.memory.memory[stack_address]
+        self.memory.memory[stack_address] = 0x00
+        word = (msb << 8) | lsb
+        return word
+
+    def jsr(self):
+        address = self.fetch_word()
+        old_pc = self.program_counter - 1
+        self.push_word_stack(old_pc)
+        self.program_counter = address
+
+    def rts(self):
+        stacked_pc = self.pop_word_stack()
+        self.cycles += 1
+        self.program_counter = stacked_pc + 1
+
     def pha(self):
         self.push_byte_stack(self.a)
 
