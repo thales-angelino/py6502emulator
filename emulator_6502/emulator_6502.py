@@ -3,7 +3,7 @@ from instructions import OPCODES_TABLE
 PAGE_SIZE = 256
 MEM_SIZE = 65536
 START_ADDRESS = 0x600
-
+INTERRUPT_VECTOR = 0xfffe
 LSB_7BITS_ENABLED_MASK = 0x7f 
 OVERFLOW_MASK = 0x80
 
@@ -243,6 +243,16 @@ class CPU(object):
         self.cycles += 1
         result = (value + 1) & 0xff
         return result
+
+    def inx(self):
+        self.cycles += 1
+        self.x = (self.x + 1) & 0xff
+        self.check_processor_flags_routine(self.x)
+
+    def iny(self):
+        self.cycles += 1
+        self.y = (self.y + 1) & 0xff
+        self.check_processor_flags_routine(self.y)
     
     def inc(self, address):    
         value = self.read_byte(address)
@@ -432,7 +442,7 @@ class CPU(object):
         return value
 
     def push_word_stack(self, word):
-        self.cycles += 3
+        self.cycles += 2
         msb = (word >> 8) & 0xff
         lsb = word & 0xff
         stack_address = 0x100 + self.stack_pointer
@@ -443,7 +453,7 @@ class CPU(object):
         self.stack_pointer -= 1
 
     def pop_word_stack(self):
-        self.cycles += 4
+        self.cycles += 2
         self.stack_pointer += 1
         stack_address = 0x100 + self.stack_pointer
         lsb = self.memory.memory[stack_address]
@@ -456,6 +466,7 @@ class CPU(object):
         return word
 
     def jsr(self):
+        self.cycles += 1
         address = self.fetch_word()
         old_pc = self.program_counter - 1
         self.push_word_stack(old_pc)
@@ -463,8 +474,18 @@ class CPU(object):
 
     def rts(self):
         stacked_pc = self.pop_word_stack()
-        self.cycles += 1
+        self.cycles += 3
         self.program_counter = stacked_pc + 1
+
+    def brk(self):
+        self.push_word_stack(self.program_counter)
+        self.php()
+        self.program_counter = self.read_word(INTERRUPT_VECTOR)
+        self.processor_status['break_command'] = 1
+
+    def rti(self):
+        self.plp()
+        self.program_counter = self.pop_word_stack()
 
     def pha(self):
         self.push_byte_stack(self.a)

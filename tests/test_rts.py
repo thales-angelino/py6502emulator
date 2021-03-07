@@ -9,7 +9,7 @@ class TestRTS(unittest.TestCase):
         self.cpu = emulator.CPU(self.memory)
         self.cpu.reset()
 
-    def test_jsr_with_rts(self):
+    def test_rts(self):
         self.memory.memory[0x1fe] = 0x3f
         self.memory.memory[0x1ff] = 0x30
         self.cpu.stack_pointer = 0xfd

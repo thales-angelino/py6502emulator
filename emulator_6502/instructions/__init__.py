@@ -49,6 +49,10 @@ import plp
 import php
 import jsr
 import rts
+import rti
+import brk
+import iny
+import inx
 
 OPCODES_TABLE = {
     lda.LDA_IMMEDIATE_OPCODE: lda.LDAImmediate(),
@@ -196,4 +200,8 @@ OPCODES_TABLE = {
     php.PHP_IMPLIED_OPCODE: php.PHPImplied(),
     jsr.JSR_ABSOLUTE_OPCODE: jsr.JSRAbsolute(),
     rts.RTS_IMPLIED_OPCODE: rts.RTSImplied(),
+    inx.INX_IMPLIED_OPCODE: inx.INXImplied(),
+    iny.INY_IMPLIED_OPCODE: iny.INYImplied(),
+    brk.BRK_IMPLIED_OPCODE: brk.BRKImplied(),
+    rti.RTI_IMPLIED_OPCODE: rti.RTIImplied(),
 }
