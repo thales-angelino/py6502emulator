@@ -53,6 +53,7 @@ import rti
 import brk
 import iny
 import inx
+import bit
 
 OPCODES_TABLE = {
     lda.LDA_IMMEDIATE_OPCODE: lda.LDAImmediate(),
@@ -204,4 +205,6 @@ OPCODES_TABLE = {
     iny.INY_IMPLIED_OPCODE: iny.INYImplied(),
     brk.BRK_IMPLIED_OPCODE: brk.BRKImplied(),
     rti.RTI_IMPLIED_OPCODE: rti.RTIImplied(),
+    bit.BIT_ZEROPAGE_OPCODE: bit.BITZeroPage(),
+    bit.BIT_ABSOLUTE_OPCODE: bit.BITAbsolute(),
 }

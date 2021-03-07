@@ -311,6 +311,21 @@ class CPU(object):
         self.a = result
         self.check_processor_flags_routine(self.a)
 
+    def bit(self, value):
+        result = (self.a & value)
+        if (result & 0xff) == 0:
+            self.processor_status['zero'] = 1
+
+        if (result & 0b10000000) > 0:
+            self.processor_status['negative'] = 1
+        else:
+            self.processor_status['negative'] = 0
+
+        if (result & 0b01000000) > 0:
+            self.processor_status['overflow'] = 1
+        else:
+            self.processor_status['overflow'] = 0
+
     def eor(self, value):
         '''Exclusive OR'''
         result = (self.a ^ value)
