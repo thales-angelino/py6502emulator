@@ -2,7 +2,7 @@ BNE_RELATIVE_OPCODE = 0xd0
 
 
 class BNERelative(object):
-    """BMI relative instruction"""
+    """BNE relative instruction"""
     def __init__(self):
         super(BNERelative, self).__init__()
 

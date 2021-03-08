@@ -3,10 +3,21 @@ PAGE_SIZE = 256
 LINE_SIZE = 16
 
 class Memory(object):
-    """Memory class is able to hold incredible 64 kb"""
+    """Memory class is able to hold incredible 64 KB"""
     def __init__(self):
         super(Memory, self).__init__()
         self.memory = [0x00] * MEM_SIZE
+
+    def load_file(self, filename):
+        hex_file = open(filename, 'r')
+        lines = hex_file.readlines()
+        for line in lines:
+            l = line.strip()
+            addr_split = l.split(':')
+            base_addr = int(addr_split[0], 16)
+            values = addr_split[1].split()
+            for i in range(len(values)):
+                self.memory[base_addr+i] = int(values[i], 16)
 
     def dump_mem(self):
         for i in range(0, len(self.memory), PAGE_SIZE):

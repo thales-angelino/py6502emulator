@@ -45,9 +45,6 @@ class CPU(object):
 
         print('Execution stopped')
 
-    def load_hex(self, filename):
-        pass
-
     def run_opcode(self, opcode):
         instruction = OPCODES_TABLE.get(opcode)
         if instruction is not None:
@@ -88,8 +85,13 @@ class CPU(object):
     def check_processor_flags_routine(self, register):
         if (register == 0):
             self.processor_status['zero'] = 1
+        else:
+            self.processor_status['zero'] = 0
+
         if (register & 0b10000000) > 0:
             self.processor_status['negative'] = 1
+        else:
+            self.processor_status['negative'] = 0
 
     def load_register_a(self, value):
         self.a = value
@@ -137,6 +139,8 @@ class CPU(object):
         if self.processor_status['zero'] is 0:
             # Branch succeeded
             self.cycles += 1
+            print 'offset'
+            print (hex(offset))
             self.branch(offset)
 
     def bpl(self, offset):
@@ -186,6 +190,7 @@ class CPU(object):
         self.processor_status['overflow'] = 0
         
     def branch(self, offset):
+        self.program_counter -= 1 # Current is minus one
         old_pc = self.program_counter
         if (offset & 0b10000000) > 0:
             self.program_counter -= (offset ^ 0xff)
