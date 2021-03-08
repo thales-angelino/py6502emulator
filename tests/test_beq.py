@@ -12,7 +12,7 @@ class TestBEQ(unittest.TestCase):
     def test_beq_scenario1(self):
         expected_cycles = 3
         value = 0x03
-        expected_pc = 0x605
+        expected_pc = 0x604
         self.memory.memory[emulator.START_ADDRESS] = beq.BEQ_RELATIVE_OPCODE
         self.memory.memory[emulator.START_ADDRESS + 1] = value
         self.cpu.processor_status['zero'] = 1
@@ -23,7 +23,7 @@ class TestBEQ(unittest.TestCase):
     def test_beq_scenario2(self):
         expected_cycles = 4
         value = 0xfc
-        expected_pc = 0x5ff
+        expected_pc = 0x5fe
         self.memory.memory[emulator.START_ADDRESS] = beq.BEQ_RELATIVE_OPCODE
         self.memory.memory[emulator.START_ADDRESS + 1] = value
         self.cpu.processor_status['zero'] = 1

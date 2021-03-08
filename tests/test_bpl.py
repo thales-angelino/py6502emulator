@@ -9,10 +9,10 @@ class TestBPL(unittest.TestCase):
         self.cpu = emulator.CPU(self.memory)
         self.cpu.reset()
 
-    def test_bne_scenario1(self):
+    def test_bpl_scenario1(self):
         expected_cycles = 3
         value = 0x03
-        expected_pc = 0x605
+        expected_pc = 0x604
         self.memory.memory[emulator.START_ADDRESS] = bpl.BPL_RELATIVE_OPCODE
         self.memory.memory[emulator.START_ADDRESS + 1] = value
         self.cpu.processor_status['negative'] = 0
@@ -20,10 +20,10 @@ class TestBPL(unittest.TestCase):
         self.assertEqual(self.cpu.program_counter, expected_pc, "Program counter should contain: %s" % hex(expected_pc))
         self.assertEqual(self.cpu.cycles, expected_cycles, "CPU cycles should be %d" % expected_cycles)
 
-    def test_bne_scenario2(self):
+    def test_bpl_scenario2(self):
         expected_cycles = 4
         value = 0xfc
-        expected_pc = 0x5ff
+        expected_pc = 0x5fe
         self.memory.memory[emulator.START_ADDRESS] = bpl.BPL_RELATIVE_OPCODE
         self.memory.memory[emulator.START_ADDRESS + 1] = value
         self.cpu.processor_status['negative'] = 0
@@ -31,7 +31,7 @@ class TestBPL(unittest.TestCase):
         self.assertEqual(self.cpu.program_counter, expected_pc, "Program counter should contain: %s" % hex(expected_pc))
         self.assertEqual(self.cpu.cycles, expected_cycles, "CPU cycles should be %d" % expected_cycles)
 
-    def test_bne_scenario3(self):
+    def test_bpl_scenario3(self):
         expected_cycles = 2
         value = 0xfc
         expected_pc = 0x602

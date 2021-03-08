@@ -12,7 +12,7 @@ class TestBCC(unittest.TestCase):
     def test_bcc_scenario1(self):
         expected_cycles = 3
         value = 0x03
-        expected_pc = 0x605
+        expected_pc = 0x604
         self.memory.memory[emulator.START_ADDRESS] = bcc.BCC_RELATIVE_OPCODE
         self.memory.memory[emulator.START_ADDRESS + 1] = value
         self.cpu.execute(1)
@@ -22,7 +22,7 @@ class TestBCC(unittest.TestCase):
     def test_bcc_scenario2(self):
         expected_cycles = 4
         value = 0xfc
-        expected_pc = 0x5ff
+        expected_pc = 0x5fe
         self.memory.memory[emulator.START_ADDRESS] = bcc.BCC_RELATIVE_OPCODE
         self.memory.memory[emulator.START_ADDRESS + 1] = value
         self.cpu.execute(1)

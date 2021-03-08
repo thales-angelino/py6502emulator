@@ -12,7 +12,7 @@ class TestBVC(unittest.TestCase):
     def test_bvc_scenario1(self):
         expected_cycles = 3
         value = 0x03
-        expected_pc = 0x605
+        expected_pc = 0x604
         self.memory.memory[emulator.START_ADDRESS] = bvc.BVC_RELATIVE_OPCODE
         self.memory.memory[emulator.START_ADDRESS + 1] = value
         self.cpu.processor_status['overflow'] = 0
@@ -23,7 +23,7 @@ class TestBVC(unittest.TestCase):
     def test_bvc_scenario2(self):
         expected_cycles = 4
         value = 0xfc
-        expected_pc = 0x5ff
+        expected_pc = 0x5fe
         self.memory.memory[emulator.START_ADDRESS] = bvc.BVC_RELATIVE_OPCODE
         self.memory.memory[emulator.START_ADDRESS + 1] = value
         self.cpu.processor_status['overflow'] = 0
